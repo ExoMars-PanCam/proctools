@@ -54,21 +54,6 @@ def init(file: Optional[Path] = None, stdout: bool = True, mode: str = "a", leve
     initialised = True
 
 
-def _handle_exception(exc_type, exc_value, exc_traceback):
-    """Log all uncaught exceptions encountered at runtime"""
-    global initialised, root
-    if issubclass(exc_type, KeyboardInterrupt):
-        sys.__excepthook__(exc_type, exc_value, exc_traceback)
-        return
-    root.critical(f"Uncaught exception {exc_type.__name__}: {exc_value}",
-                  exc_info=(exc_type, exc_value, exc_traceback))
-    if not initialised:
-        # ensure pre-init exceptions are at least logged to stdout
-        # (in the future we should append to a default log file for these events)
-        init()
-    logging.shutdown()
-
-
 class _BufferHandler(logging.Handler):
     def __init__(self, targets=None):
         super().__init__()
@@ -104,4 +89,3 @@ root = logging.getLogger("")
 root.setLevel(logging.DEBUG)
 buffer = _BufferHandler()
 root.addHandler(buffer)
-sys.excepthook = _handle_exception
