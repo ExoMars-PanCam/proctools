@@ -72,6 +72,9 @@ class _BufferHandler(logging.Handler):
             if self.targets:
                 for record in self.buffer:
                     for target in self.targets:
+                        # note: getLevelName actually goes both ways (str <-> int; here str -> int)
+                        if logging.getLevelName(record.levelname) < target.level:
+                            continue
                         target.handle(record)
                 self.buffer = []
         finally:
