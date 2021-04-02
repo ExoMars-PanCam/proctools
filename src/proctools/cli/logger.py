@@ -5,6 +5,10 @@ import sys
 import time
 from typing import Optional
 
+from . import __processor_id__
+
+FALLBACK_LOG = Path(f"/tmp/{__processor_id__}_fallback.log")
+
 initialised: bool = False  # (see python issue 34939 for why this needs to be at the top specifically)
 
 
@@ -21,36 +25,47 @@ def init(file: Optional[Path] = None, stdout: bool = True, mode: str = "a", leve
     elif level not in (logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL):
         raise ValueError(f"'{level}' is not a valid log level")
 
+    if file is not None:
+        fh = None
+        try:
+            fh = logging.FileHandler(file, mode=mode)
+        except PermissionError as e:
+            log = logging.getLogger("logger")
+            log.warning(f"{e.__class__.__name__}: {e}")
+            log.warning(f"Attempting to use fallback: '{FALLBACK_LOG}'")
+            try:
+                fh = logging.FileHandler(FALLBACK_LOG, mode=mode)
+            except PermissionError as e:
+                log.warning(f"{e.__class__.__name__}: {e}")
+                log.error("Unable to log to primary or fallback file; forcing stdout")
+                stdout = True
+        if fh is not None:
+            fh.setLevel(level)
+            logging.Formatter.converter = time.gmtime
+            fh_fmt = logging.Formatter(fmt="%(asctime)s.%(msecs)03dZ "
+                                           "%(name)-18s "
+                                           "%(levelname)-8s "
+                                           "%(message)s",
+                                       datefmt="%Y-%m-%dT%H:%M:%S")
+            fh.setFormatter(fh_fmt)
+            root.addHandler(fh)
+
     if stdout:
         fmt = "%(name)-18s %(levelname)-8s %(message)s"
         try:
             import coloredlogs
-            coloredlogs.install(level=level, logger=root, fmt=fmt)
+            coloredlogs.install(level=level, logger=root, fmt=fmt, stream=sys.stdout)
         except ImportError:
-            cli = logging.StreamHandler(sys.stdout)
-            cli.setLevel(level)
-            cli_fmt = logging.Formatter(fmt)
-            cli.setFormatter(cli_fmt)
-            root.addHandler(cli)
-
-    if file is not None:
-        fh = logging.FileHandler(file, mode=mode)
-        fh.setLevel(level)
-        logging.Formatter.converter = time.gmtime
-        fh_fmt = logging.Formatter(fmt="%(asctime)s.%(msecs)03dZ "
-                                       "%(name)-18s "
-                                       "%(levelname)-8s "
-                                       "%(message)s",
-                                   datefmt="%Y-%m-%dT%H:%M:%S")
-        fh.setFormatter(fh_fmt)
-        root.addHandler(fh)
+            sh = logging.StreamHandler(sys.stdout)
+            sh.setLevel(level)
+            sh_fmt = logging.Formatter(fmt)
+            sh.setFormatter(sh_fmt)
+            root.addHandler(sh)
 
     # flush the temporary log record buffer to the new handler(s)
-    handlers = [h for h in root.handlers if h is not buffer]
-    buffer.set_targets(handlers)
+    buffer.set_targets([h for h in root.handlers if h is not buffer])  # ok if empty
     buffer.close()
     root.removeHandler(buffer)
-
     initialised = True
 
 
