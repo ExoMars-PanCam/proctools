@@ -1,28 +1,40 @@
 import logging
 import logging.handlers
-from pathlib import Path
 import sys
 import time
+from pathlib import Path
 from typing import Optional
 
 from . import __processor_id__
 
 FALLBACK_LOG = Path(f"/tmp/{__processor_id__}_fallback.log")
 
-initialised: bool = False  # (see python issue 34939 for why this needs to be at the top specifically)
+# need to keep this at the top due to it being an annotated global (python issue34939)
+initialised: bool = False
 
 
-def init(file: Optional[Path] = None, stdout: bool = True, mode: str = "a", level: int = logging.INFO):
+def init(
+    file: Optional[Path] = None,
+    stdout: bool = True,
+    mode: str = "a",
+    level: int = logging.INFO,
+):
     global buffer, initialised, root
 
     if initialised:
         root.warning("Attempting to reinitialise the log; ignoring")
         return
     elif file is None and not stdout:
-        # still commit critical entries to the buffer so they can be retrieved if needed during cleanup
+        # still commit critical entries to the buffer so they can be retrieved if needed
         logging.disable(logging.CRITICAL)
         return
-    elif level not in (logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL):
+    elif level not in (
+        logging.DEBUG,
+        logging.INFO,
+        logging.WARNING,
+        logging.ERROR,
+        logging.CRITICAL,
+    ):
         raise ValueError(f"'{level}' is not a valid log level")
 
     if file is not None:
@@ -42,11 +54,10 @@ def init(file: Optional[Path] = None, stdout: bool = True, mode: str = "a", leve
         if fh is not None:
             fh.setLevel(level)
             logging.Formatter.converter = time.gmtime
-            fh_fmt = logging.Formatter(fmt="%(asctime)s.%(msecs)03dZ "
-                                           "%(name)-18s "
-                                           "%(levelname)-8s "
-                                           "%(message)s",
-                                       datefmt="%Y-%m-%dT%H:%M:%S")
+            fh_fmt = logging.Formatter(
+                fmt="%(asctime)s.%(msecs)03dZ %(name)-18s %(levelname)-8s %(message)s",
+                datefmt="%Y-%m-%dT%H:%M:%S",
+            )
             fh.setFormatter(fh_fmt)
             root.addHandler(fh)
 
@@ -54,6 +65,7 @@ def init(file: Optional[Path] = None, stdout: bool = True, mode: str = "a", leve
         fmt = "%(name)-18s %(levelname)-8s %(message)s"
         try:
             import coloredlogs
+
             coloredlogs.install(level=level, logger=root, fmt=fmt, stream=sys.stdout)
         except ImportError:
             sh = logging.StreamHandler(sys.stdout)
@@ -87,7 +99,7 @@ class _BufferHandler(logging.Handler):
             if self.targets:
                 for record in self.buffer:
                     for target in self.targets:
-                        # note: getLevelName actually goes both ways (str <-> int; here str -> int)
+                        # note: getLevelName actually goes both ways (here: str -> int)
                         if logging.getLevelName(record.levelname) < target.level:
                             continue
                         target.handle(record)
@@ -102,7 +114,8 @@ class _BufferHandler(logging.Handler):
             logging.Handler.close(self)
 
 
-# direct log entries to temporary buffer on import; subsequently redirected to proper handler(s) by `init`
+# direct log entries to temporary buffer on import;
+# subsequently redirected to proper handler(s) by `init`
 root = logging.getLogger("")
 root.setLevel(logging.DEBUG)
 buffer = _BufferHandler()
