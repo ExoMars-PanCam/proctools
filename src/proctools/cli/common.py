@@ -12,7 +12,7 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 def cli_runner(cli: typer.Typer):
     start = time.time()
-    log = logging.getLogger("cli")
+    log = logging.getLogger(__name__)
     log.info(f"Invocation started of: {' '.join(sys.argv)}")
     try:
         # prevent Typer from catching and printing (click) exceptions (standalone_mode)
@@ -30,11 +30,14 @@ def cli_runner(cli: typer.Typer):
         status = 1
 
     if not logger.initialised:
-        log.warning(
-            "Logger not initialised; writing debug log to fallback:"
-            f" '{logger.FALLBACK_LOG}'"
+        if status != 0:
+            log.warning(
+                "Logger not initialised; writing debug log to fallback:"
+                f" '{logger.FALLBACK_LOG}'"
+            )
+        logger.init(
+            file=logger.FALLBACK_LOG, stdout=bool(status), mode="a", level=logging.DEBUG
         )
-        logger.init(file=logger.FALLBACK_LOG, mode="a", level=logging.DEBUG)
 
     log.info(
         f"Invocation {'completed' if status == 0 else 'aborted'} (elapsed:"

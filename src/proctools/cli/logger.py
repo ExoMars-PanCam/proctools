@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from . import __processor_id__
+from . import __processor_id__, __project__
 
 FALLBACK_LOG = Path(f"/tmp/{__processor_id__}_fallback.log")
 
@@ -55,14 +55,14 @@ def init(
             fh.setLevel(level)
             logging.Formatter.converter = time.gmtime
             fh_fmt = logging.Formatter(
-                fmt="%(asctime)s.%(msecs)03dZ %(name)-18s %(levelname)-8s %(message)s",
+                fmt="%(asctime)s.%(msecs)03dZ %(name)-25s %(levelname)-8s %(message)s",
                 datefmt="%Y-%m-%dT%H:%M:%S",
             )
             fh.setFormatter(fh_fmt)
             root.addHandler(fh)
 
     if stdout:
-        fmt = "%(name)-18s %(levelname)-8s %(message)s"
+        fmt = "%(name)-25s %(levelname)-8s %(message)s"
         try:
             import coloredlogs
 
@@ -116,7 +116,7 @@ class _BufferHandler(logging.Handler):
 
 # direct log entries to temporary buffer on import;
 # subsequently redirected to proper handler(s) by `init`
-root = logging.getLogger("")
+root = logging.getLogger(__project__)
 root.setLevel(logging.DEBUG)
 buffer = _BufferHandler()
 root.addHandler(buffer)
