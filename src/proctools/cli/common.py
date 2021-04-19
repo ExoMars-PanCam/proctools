@@ -7,7 +7,7 @@ from click import ClickException
 
 from .. import __project__, __version__, logger
 
-CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=88)
 
 
 def cli_runner(cli: typer.Typer):
