@@ -19,10 +19,10 @@ def init(
     mode: str = "a",
     level: int = logging.INFO,
 ):
-    global buffer, initialised, root
+    global _buffer, initialised, _root
 
     if initialised:
-        root.warning("Attempting to reinitialise the log; ignoring")
+        _root.warning("Attempting to reinitialise the log; ignoring")
         return
     elif file is None and not stdout:
         # still commit critical entries to the buffer so they can be retrieved if needed
@@ -59,26 +59,35 @@ def init(
                 datefmt="%Y-%m-%dT%H:%M:%S",
             )
             fh.setFormatter(fh_fmt)
-            root.addHandler(fh)
+            _root.addHandler(fh)
 
     if stdout:
         fmt = "%(name)-25s %(levelname)-8s %(message)s"
         try:
             import coloredlogs
 
-            coloredlogs.install(level=level, logger=root, fmt=fmt, stream=sys.stdout)
+            coloredlogs.install(level=level, logger=_root, fmt=fmt, stream=sys.stdout)
         except ImportError:
             sh = logging.StreamHandler(sys.stdout)
             sh.setLevel(level)
             sh_fmt = logging.Formatter(fmt)
             sh.setFormatter(sh_fmt)
-            root.addHandler(sh)
+            _root.addHandler(sh)
 
+    handlers = [h for h in _root.handlers if h is not _buffer]
+    # hopefully temporary: prevent pds4_tools from violating its quiet setting
+    for handler in handlers:
+        handler.addFilter(_filter_pds4_tools)
     # flush the temporary log record buffer to the new handler(s)
-    buffer.set_targets([h for h in root.handlers if h is not buffer])  # ok if empty
-    buffer.close()
-    root.removeHandler(buffer)
+    _buffer.set_targets(handlers)  # ok if empty
+    _buffer.close()
+    _root.removeHandler(_buffer)
     initialised = True
+    del _buffer
+
+
+def _filter_pds4_tools(record):
+    return not record.name.startswith("PDS4ToolsLogger")
 
 
 class _BufferHandler(logging.Handler):
@@ -116,7 +125,7 @@ class _BufferHandler(logging.Handler):
 
 # direct log entries to temporary buffer on import;
 # subsequently redirected to proper handler(s) by `init`
-root = logging.getLogger(__project__)
-root.setLevel(logging.DEBUG)
-buffer = _BufferHandler()
-root.addHandler(buffer)
+_root = logging.getLogger()
+_root.setLevel(logging.DEBUG)
+_buffer = _BufferHandler()
+_root.addHandler(_buffer)
