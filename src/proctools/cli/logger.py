@@ -87,7 +87,9 @@ def init(
 
 
 def _filter_pds4_tools(record):
-    return not record.name.startswith("PDS4ToolsLogger")
+    if record.name.startswith("PDS4ToolsLogger") and record.levelno < logging.WARNING:
+        return False
+    return True
 
 
 class _BufferHandler(logging.Handler):
