@@ -109,6 +109,7 @@ class DataProduct:
         "filter": ".//img:Optical_Filter/img:filter_number",
         # TODO: subframe params, temperature, ++ (maybe in sublasses)
         "exposure_duration": ".//img:Exposure/img:exposure_duration",
+        "model": ".//img_surface:Instrument_Information/img_surface:instrument_version_number",
     }
 
     def __init__(self, init: Union[StructureList, Template], filename: str = None):
