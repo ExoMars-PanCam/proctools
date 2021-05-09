@@ -25,7 +25,8 @@ def cli_runner(cli: typer.Typer):
     except Exception as e:
         import traceback
 
-        tb = "".join(traceback.format_exception(e.__class__, e, e.__traceback__))
+        limit = None if logger.level is None or logger.level <= logging.DEBUG else -2
+        tb = "".join(traceback.format_exception(e.__class__, e, e.__traceback__, limit))
         log.critical(f"Uncaught exception {e.__class__.__name__}: {e}\n{tb}")
         status = 1
 
@@ -36,7 +37,10 @@ def cli_runner(cli: typer.Typer):
                 f" '{logger.FALLBACK_LOG}'"
             )
         logger.init(
-            file=logger.FALLBACK_LOG, stdout=bool(status), mode="a", level=logging.DEBUG
+            file=logger.FALLBACK_LOG,
+            stdout=bool(status),
+            mode="a",
+            log_level=logging.DEBUG,
         )
 
     log.info(

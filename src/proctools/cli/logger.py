@@ -11,15 +11,16 @@ FALLBACK_LOG = Path(f"/tmp/{__processor_id__}_fallback.log")
 
 # need to keep this at the top due to it being an annotated global (python issue34939)
 initialised: bool = False
+level: Optional[int] = None
 
 
 def init(
     file: Optional[Path] = None,
     stdout: bool = True,
     mode: str = "a",
-    level: int = logging.INFO,
+    log_level: int = logging.INFO,
 ):
-    global _buffer, initialised, _root
+    global _buffer, initialised, _root, level
 
     if initialised:
         _root.warning("Attempting to reinitialise the log; ignoring")
@@ -28,14 +29,15 @@ def init(
         # still commit critical entries to the buffer so they can be retrieved if needed
         logging.disable(logging.CRITICAL)
         return
-    elif level not in (
+    elif log_level not in (
         logging.DEBUG,
         logging.INFO,
         logging.WARNING,
         logging.ERROR,
         logging.CRITICAL,
     ):
-        raise ValueError(f"'{level}' is not a valid log level")
+        raise ValueError(f"'{log_level}' is not a valid log level")
+    level = log_level
 
     if file is not None:
         fh = None
@@ -52,24 +54,26 @@ def init(
                 log.error("Unable to log to primary or fallback file; forcing stdout")
                 stdout = True
         if fh is not None:
-            fh.setLevel(level)
+            fh.setLevel(log_level)
             logging.Formatter.converter = time.gmtime
             fh_fmt = logging.Formatter(
-                fmt="%(asctime)s.%(msecs)03dZ %(name)-25s %(levelname)-8s %(message)s",
+                fmt="%(asctime)s.%(msecs)03dZ %(name)-20s %(levelname)-8s %(message)s",
                 datefmt="%Y-%m-%dT%H:%M:%S",
             )
             fh.setFormatter(fh_fmt)
             _root.addHandler(fh)
 
     if stdout:
-        fmt = "%(name)-25s %(levelname)-8s %(message)s"
+        fmt = "%(name)-20s %(levelname)-8s %(message)s"
         try:
             import coloredlogs
 
-            coloredlogs.install(level=level, logger=_root, fmt=fmt, stream=sys.stdout)
+            coloredlogs.install(
+                level=log_level, logger=_root, fmt=fmt, stream=sys.stdout
+            )
         except ImportError:
             sh = logging.StreamHandler(sys.stdout)
-            sh.setLevel(level)
+            sh.setLevel(log_level)
             sh_fmt = logging.Formatter(fmt)
             sh.setFormatter(sh_fmt)
             _root.addHandler(sh)

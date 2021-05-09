@@ -15,22 +15,32 @@ class ProductLoader:
     """
 
     def __init__(self):
+        self._dir_name = None
         self._initialised = False
         self._log = logging.getLogger(__name__)
         self._product_map = {}
         self._usage_map = {}
 
-    def load_products(self, directory: Path, recursive: bool = True) -> None:
+    def load_products(self, directory: Path, recursive: bool = True) -> int:
         """Load all valid PDS4 products from a given directory.
 
         A product is considered valid if it defines a product type and that type matches
         one supported by a `DataProduct` subclass.
 
+        Symbolic links will be followed.
+
         Args:
             directory: Path to a directory in which to search for products.
             recursive: Search recursively in `directory`.
 
+        Returns:
+            Number of valid products loaded.
+
+        Raises:
+            RuntimeError: If no valid products could be loaded from `directory`.
+
         """
+        loaded = 0
         pattern = "**/*.xml" if recursive else "*.xml"
         for path in glob(str(directory / pattern), recursive=recursive):
             path = Path(path).resolve()
@@ -39,6 +49,7 @@ class ProductLoader:
             except (TypeError, ExpatError) as e:
                 self._log.warning(f"{e}; ignoring")
             else:
+                loaded += 1
                 if dp.type not in self._product_map:
                     self._product_map[dp.type] = []
                 self._product_map[dp.type].append(dp)
@@ -46,7 +57,11 @@ class ProductLoader:
             products.sort()  # ensure self.next works in sorting order
         for type_, products in self._product_map.items():
             self._usage_map[type_] = [False] * len(products)
-        self._initialised = True
+        self._dir_name = directory.name
+        self._initialised = bool(loaded)
+        if not self._initialised:
+            raise RuntimeError(f"'{self._dir_name}' contains no valid products")
+        return loaded
 
     def all(self, type_: str):
         """Retrieve all loaded products of `type_`.
@@ -59,10 +74,11 @@ class ProductLoader:
             All loaded products of `type_`.
 
         Raises:
-            RuntimeError: If `self.load_products` has not been called
-            KeyError: If no `type_` products have been loaded.
+            RuntimeError: If `self.load_products` has not been called.
+            RuntimeError: If no `type_` products have been loaded.
         """
-        self._ensure_valid_type(type_)
+        self._ensure_initialised()
+        self._ensure_loaded_type(type_)
         self._usage_map[type_][:] = [True] * len(self._usage_map[type_])
         return self._product_map[type_]
 
@@ -77,12 +93,13 @@ class ProductLoader:
 
         Returns:
             The next unused data product or None if none remain.
+
         Raises:
             RuntimeError: If `self.load_products` has not been called.
-            KeyError: If no `type_` products have been loaded.
+            RuntimeError: If no `type_` products have been loaded.
         """
-        self._ensure_valid_type(type_)
         self._ensure_initialised()
+        self._ensure_loaded_type(type_)
         try:
             idx = self._usage_map[type_].index(False)
         except ValueError:
@@ -108,12 +125,13 @@ class ProductLoader:
         Returns:
             The matching data product or None if no applicable product of `type_` was
             found.
+
         Raises:
             RuntimeError: If `self.load_products` has not been called.
-            KeyError: If no `type_` products have been loaded.
+            RuntimeError: If no `type_` products have been loaded.
         """
         self._ensure_initialised()
-        self._ensure_valid_type(type_)
+        self._ensure_loaded_type(type_)
         for idx, candidate in enumerate(self._product_map[type_]):
             if candidate.is_applicable(product):
                 break
@@ -132,6 +150,9 @@ class ProductLoader:
 
         Args:
             warning: If True, issue warnings, else issue info-level log records.
+
+        Raises:
+            RuntimeError: If `self.load_products` has not been called.
         """
         log = self._log.warning if warning else self._log.info
         self._ensure_initialised()
@@ -140,12 +161,18 @@ class ProductLoader:
                 if used:
                     continue
                 product_lid = self._product_map[type_][idx].meta.lid
-                log(f"Product loaded but never used: {product_lid}")
+                log(
+                    f"Product loaded from '{self._dir_name}' but never used:"
+                    f" {product_lid}"
+                )
 
     def _ensure_initialised(self) -> None:
         if not self._initialised:
             raise RuntimeError("No products have been loaded")
 
-    def _ensure_valid_type(self, type_: str) -> None:
+    def _ensure_loaded_type(self, type_: str) -> None:
         if type_ not in self._product_map:
-            raise KeyError(f"No products of type '{type_}' have been loaded")
+            raise RuntimeError(
+                f"No products of type '{type_}' have been loaded from"
+                f" '{self._dir_name}'"
+            )
