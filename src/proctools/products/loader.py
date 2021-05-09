@@ -1,4 +1,5 @@
 import logging
+from glob import glob
 from pathlib import Path
 from typing import List, Optional
 from xml.parsers.expat import ExpatError
@@ -30,8 +31,9 @@ class ProductLoader:
             recursive: Search recursively in `directory`.
 
         """
-        search = directory.rglob if recursive else directory.glob
-        for path in search("*.xml"):
+        pattern = "**/*.xml" if recursive else "*.xml"
+        for path in glob(str(directory / pattern), recursive=recursive):
+            path = Path(path).resolve()
             try:
                 dp = DataProduct.from_file(path)
             except (TypeError, ExpatError) as e:
