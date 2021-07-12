@@ -1,13 +1,14 @@
 import logging
 import logging.handlers
 import sys
+import tempfile
 import time
 from pathlib import Path
 from typing import Optional
 
 from . import __processor_id__, __project__
 
-FALLBACK_LOG = Path(f"/tmp/{__processor_id__}_fallback.log")
+FALLBACK_LOG = Path(tempfile.gettempdir()) / f"{__processor_id__}_fallback.log"
 
 # need to keep this at the top due to it being an annotated global (python issue34939)
 initialised: bool = False
