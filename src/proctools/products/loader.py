@@ -1,7 +1,7 @@
 import logging
 from glob import glob
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Union
 from xml.parsers.expat import ExpatError
 
 from . import DataProduct
@@ -15,13 +15,15 @@ class ProductLoader:
     """
 
     def __init__(self):
-        self._dir_name = None
+        self._dir_names = []
         self._initialised = False
         self._log = logging.getLogger(__name__)
         self._product_map = {}
         self._usage_map = {}
 
-    def load_products(self, directory: Path, recursive: bool = True) -> int:
+    def load_products(
+        self, directory: Union[Path, List[Path]], recursive: bool = True
+    ) -> int:
         """Load all valid PDS4 products from a given directory.
 
         A product is considered valid if it defines a product type and that type matches
@@ -30,7 +32,8 @@ class ProductLoader:
         Symbolic links will be followed.
 
         Args:
-            directory: Path to a directory in which to search for products.
+            directory: Path to a directory, or list of paths to directories, in which to
+                search for products.
             recursive: Search recursively in `directory`.
 
         Returns:
@@ -40,27 +43,31 @@ class ProductLoader:
             RuntimeError: If no valid products could be loaded from `directory`.
 
         """
+        if not isinstance(directory, list):
+            directory = [directory]
         loaded = 0
         pattern = "**/*.xml" if recursive else "*.xml"
-        for path in glob(str(directory / pattern), recursive=recursive):
-            path = Path(path).resolve()
-            try:
-                dp = DataProduct.from_file(path)
-            except (TypeError, ExpatError) as e:
-                self._log.warning(f"{e}; ignoring")
-            else:
-                loaded += 1
-                if dp.type not in self._product_map:
-                    self._product_map[dp.type] = []
-                self._product_map[dp.type].append(dp)
+        for dir_ in directory:
+            self._dir_names.append(dir_.name)
+            self._log.debug(f"ingesting products from {dir_.name}")
+            for path in glob(str(dir_ / pattern), recursive=recursive):
+                path = Path(path).resolve()
+                try:
+                    dp = DataProduct.from_file(path)
+                except (TypeError, ExpatError) as e:
+                    self._log.warning(f"{e}; ignoring")
+                else:
+                    loaded += 1
+                    if dp.type not in self._product_map:
+                        self._product_map[dp.type] = []
+                    self._product_map[dp.type].append(dp)
         for products in self._product_map.values():
             products.sort()  # ensure self.next works in sorting order
         for type_, products in self._product_map.items():
             self._usage_map[type_] = [False] * len(products)
-        self._dir_name = directory.name
         self._initialised = bool(loaded)
         if not self._initialised:
-            raise RuntimeError(f"'{self._dir_name}' contains no valid products")
+            raise RuntimeError(f"'{self._dir_names}' contain(s) no valid products")
         return loaded
 
     def all(self, type_: str):
@@ -162,7 +169,7 @@ class ProductLoader:
                     continue
                 product_lid = self._product_map[type_][idx].meta.lid
                 log(
-                    f"Product loaded from '{self._dir_name}' but never used:"
+                    f"Product loaded from {self._dir_names} but never used:"
                     f" {product_lid}"
                 )
 
@@ -173,6 +180,5 @@ class ProductLoader:
     def _ensure_loaded_type(self, type_: str) -> None:
         if type_ not in self._product_map:
             raise RuntimeError(
-                f"No products of type '{type_}' have been loaded from"
-                f" '{self._dir_name}'"
+                f"No products of type '{type_}' have been loaded from {self._dir_names}"
             )

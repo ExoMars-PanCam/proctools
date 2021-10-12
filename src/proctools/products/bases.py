@@ -112,12 +112,14 @@ class DataProduct:
         "model": ".//img_surface:Instrument_Information/img_surface:instrument_version_number",
     }
 
-    def __init__(self, init: Union[StructureList, Template], filename: str = None):
+    def __init__(
+        self, init: Union[StructureList, Template], path: Optional[Path] = None
+    ):
         """Wrap a PDS4 product for convenient access.
 
         Args:
             init: PDS4 product as loaded from `pds4_tools` or `passthrough`
-            filename: Optional name of the file used to load the product.
+            path: Optional path of the file used to load the product.
         """
         if isinstance(init, StructureList):
             self.template = None
@@ -131,7 +133,8 @@ class DataProduct:
             raise ValueError(
                 f"`init` must be in the form of a StructureList or Template"
             )
-        self.filename = filename
+        self.path = path
+        self.filename = getattr(self.path, "name", None)
         self.meta = LabelMeta(
             self.label, self._META_MAP, (self.template.nsmap if self.template else None)
         )
@@ -154,7 +157,7 @@ class DataProduct:
         return NotImplemented
 
     @classmethod
-    def from_file(cls, path: Path, type_: Optional[str] = None):
+    def from_file(cls, path: Path, type_: Optional[str] = None) -> "DataProduct":
         """Find and instantiate the correct DataProduct subclass from `path`
 
         The subclass is determined by the loaded product's type name
@@ -180,7 +183,7 @@ class DataProduct:
             raise TypeError(
                 f"Product '{type_}' loaded from {path} does not match any known type"
             )
-        return product(st, path.name)
+        return product(st, path)
 
 
 class ObservationalMixin:
