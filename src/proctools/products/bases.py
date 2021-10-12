@@ -222,5 +222,19 @@ class KeyTable:
         self.key_field = key_field
 
     def __getitem__(self, key: Union[int, str]):
-        # select record(s) by value of key field (e.g. "filter" field is 4)
-        return self.ts[np.where(self.ts[self.key_field] == key)]
+        # select record(s) by value of key field (e.g. where "filter" field is 4)
+        match = self.ts[np.where(self.ts[self.key_field] == key)]
+        if not match:
+            lid = getattr(
+                self.ts.full_label.find(".//pds:logical_identifier"),
+                "text",
+                "UNKNOWN",
+            )
+            raise KeyError(
+                f"key '{key}' not found in"
+                f" field '{self.key_field}' of"
+                f" table '{self.ts.meta_data['local_identifier']}' in"
+                f" file '{Path(self.ts.parent_filename).name}' of"
+                f" product '{lid}'"
+            )
+        return match
