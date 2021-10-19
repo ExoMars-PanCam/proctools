@@ -6,6 +6,7 @@ import typer
 from click import ClickException
 
 from .. import __project__, __version__, logger
+from ..util import Status
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=88)
 
@@ -17,18 +18,29 @@ def cli_runner(cli: typer.Typer):
     try:
         # prevent Typer from catching and printing (click) exceptions (standalone_mode)
         status = cli(standalone_mode=False)
-        if status is None:
-            status = 0
+        if not isinstance(status, Status):
+            log.warning(
+                f"Invalid exit code {status} ({type(status)}); falling back to"
+                f" {Status.INTERNAL_ERROR.value} ({Status.INTERNAL_ERROR})"
+            )
+            status = Status.INTERNAL_ERROR
+
     except ClickException as e:
         log.critical(f"{e.format_message()}")
-        status = 1
+        status = Status.CLI_ERROR
     except Exception as e:
         import traceback
 
         limit = None if logger.level is None or logger.level <= logging.DEBUG else -2
         tb = "".join(traceback.format_exception(e.__class__, e, e.__traceback__, limit))
         log.critical(f"Uncaught exception {e.__class__.__name__}: {e}\n{tb}")
-        status = 1
+        status = getattr(e, "code", Status.INTERNAL_ERROR)
+        if not isinstance(status, Status):
+            log.warning(
+                f"Invalid exit code {status} ({type(status)}); falling back to"
+                f" {Status.INTERNAL_ERROR.value} ({Status.INTERNAL_ERROR})"
+            )
+            status = Status.INTERNAL_ERROR
 
     if not logger.initialised:
         if status != 0:
@@ -43,13 +55,10 @@ def cli_runner(cli: typer.Typer):
             log_level=logging.DEBUG,
         )
 
-    log.info(
-        f"Invocation {'completed' if status == 0 else 'aborted'} (elapsed:"
-        f" {time.time() - start:6f}s)"
-    )
-    log.debug(f"Exiting with code {status}")
+    log.info(f"Invocation took {time.time() - start:6f}s")
+    log.info(f"Exiting with code {status.value} ({status})")
     logging.shutdown()
-    sys.exit(status)
+    sys.exit(status.value)
 
 
 def version_callback(value: bool):

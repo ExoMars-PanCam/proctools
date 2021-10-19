@@ -1,5 +1,18 @@
+import enum
 import hashlib
 from pathlib import Path
+
+
+class Status(enum.Enum):
+    SUCCESS = 0
+    INTERNAL_ERROR = 1
+    CLI_ERROR = 2
+
+    PARTIAL_SUCCESS = 10
+    FAILURE = 11
+
+    def __str__(self):
+        return self.name.lower().replace("_", " ")
 
 
 def get_md5sum(path: Path):
