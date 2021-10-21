@@ -7,7 +7,7 @@ import typer
 from click import ClickException
 
 from . import logger
-from ..util import ExitCode, ExitCodes
+from .exit import ExitCode, ExitCodes
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=88)
 
