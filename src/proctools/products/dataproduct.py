@@ -2,14 +2,11 @@ import logging
 from pathlib import Path
 from typing import ClassVar, Dict, Optional, Union
 
-import numpy as np
 import pds4_tools
 from lxml import etree
 from passthrough import Template
-from passthrough.extensions.pt.datetime import PDSDatetime
 from pds4_tools.reader.general_objects import StructureList
 from pds4_tools.reader.label_objects import Label
-from pds4_tools.reader.table_objects import TableStructure
 
 
 class LabelMeta:
@@ -32,7 +29,7 @@ class LabelMeta:
         self,
         label: Union[Label, etree._ElementTree],
         attrs: Dict[str, str],
-        nsmap: Dict[str, str] = None,
+        nsmap: Optional[Dict[str, str]] = None,
     ):
         """Expose text of `label` elements given by `attrs` as attributes.
 
@@ -98,7 +95,7 @@ class DataProduct:
     """
 
     _supported_types: ClassVar[dict] = {}
-    type: ClassVar[str] = None
+    type: ClassVar[Optional[str]] = None
     _META_MAP = {
         "lid": ".//pds:Identification_Area/pds:logical_identifier",
         "start": ".//pds:Time_Coordinates/pds:start_date_time",
@@ -184,57 +181,3 @@ class DataProduct:
                 f"Product '{type_}' loaded from {path} does not match any known type"
             )
         return product(st, path)
-
-
-class ObservationalMixin:
-    """Allow `DataProduct`s to be sorted by `pds:start_date_time`."""
-
-    def __lt__(self, other: "ObservationalMixin"):
-        return (
-            PDSDatetime(self.meta.start).datetime
-            < PDSDatetime(other.meta.start).datetime
-        )
-
-
-class ApplicableCameraMixin:
-    """Allow `DataProduct`s to evaluate applicability based on `psa:Sub-Instrument`."""
-
-    def is_applicable(self, other: "ApplicableCameraMixin"):
-        return other.meta.camera == self.meta.camera
-
-
-class MultiData:
-    """Provide access to a list's given structure's data via index key notation."""
-
-    def __init__(self, structures: StructureList, fmt: str = "{}"):
-        self.sl = structures
-        self.fmt = fmt
-
-    def __getitem__(self, struct):
-        return self.sl[self.fmt.format(struct)].data
-
-
-class KeyTable:
-    """Select row(s) of a table based on the value of a key field."""
-
-    def __init__(self, table: TableStructure, key_field: str):
-        self.ts = table
-        self.key_field = key_field
-
-    def __getitem__(self, key: Union[int, str]):
-        # select record(s) by value of key field (e.g. where "filter" field is 4)
-        match = self.ts[np.where(self.ts[self.key_field] == key)]
-        if not match:
-            lid = getattr(
-                self.ts.full_label.find(".//pds:logical_identifier"),
-                "text",
-                "UNKNOWN",
-            )
-            raise KeyError(
-                f"key '{key}' not found in"
-                f" field '{self.key_field}' of"
-                f" table '{self.ts.meta_data['local_identifier']}' in"
-                f" file '{Path(self.ts.parent_filename).name}' of"
-                f" product '{lid}'"
-            )
-        return match
