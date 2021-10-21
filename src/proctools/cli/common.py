@@ -7,12 +7,12 @@ import typer
 from click import ClickException
 
 from . import logger
-from .exit import ExitCode, ExitCodes
+from .status import ExitCode, ExitCodes
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=88)
 
 
-def cli_runner(cli: typer.Typer):
+def run(cli: typer.Typer):
     start = time.time()
     log = logging.getLogger(__name__)
     log.info(f"Invocation started of: {' '.join(sys.argv)}")
