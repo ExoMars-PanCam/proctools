@@ -16,6 +16,7 @@ def init(
     stdout: bool = True,
     mode: str = "a",
     log_level: int = logging.INFO,
+    name_col_width: int = 25,
 ):
     global _buffer, initialised, _root, level
 
@@ -55,14 +56,17 @@ def init(
             fh.setLevel(log_level)
             logging.Formatter.converter = time.gmtime
             fh_fmt = logging.Formatter(
-                fmt="%(asctime)s.%(msecs)03dZ %(name)-20s %(levelname)-8s %(message)s",
+                fmt=(
+                    f"%(asctime)s.%(msecs)03dZ %(name)-{name_col_width}s"
+                    " %(levelname)-8s %(message)s"
+                ),
                 datefmt="%Y-%m-%dT%H:%M:%S",
             )
             fh.setFormatter(fh_fmt)
             _root.addHandler(fh)
 
     if stdout:
-        fmt = "%(name)-20s %(levelname)-8s %(message)s"
+        fmt = f"%(name)-{name_col_width}s %(levelname)-8s %(message)s"
         try:
             import coloredlogs  # type: ignore
         except ImportError:
