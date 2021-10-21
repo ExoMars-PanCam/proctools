@@ -1,14 +1,10 @@
 import logging
 import logging.handlers
 import sys
-import tempfile
 import time
 from pathlib import Path
 from typing import Optional
 
-from . import __processor_id__, __project__
-
-FALLBACK_LOG = Path(tempfile.gettempdir()) / f"{__processor_id__}_fallback.log"
 
 # need to keep this at the top due to it being an annotated global (python issue34939)
 initialised: bool = False
@@ -27,8 +23,8 @@ def init(
         _root.warning("Attempting to reinitialise the log; ignoring")
         return
     elif file is None and not stdout:
-        # still commit critical entries to the buffer so they can be retrieved if needed
-        logging.disable(logging.CRITICAL)
+        # still commit error+ entries to the buffer so they can be retrieved if needed
+        logging.disable(logging.ERROR)
         return
     elif log_level not in (
         logging.DEBUG,
@@ -45,11 +41,12 @@ def init(
         try:
             fh = logging.FileHandler(file, mode=mode)
         except PermissionError as e:
+            fallback = fallback_dir() / f"fallback_{file.name}"
             log = logging.getLogger("logger")
             log.warning(f"{e.__class__.__name__}: {e}")
-            log.warning(f"Attempting to use fallback: '{FALLBACK_LOG}'")
+            log.warning(f"Attempting to use fallback: '{fallback}'")
             try:
-                fh = logging.FileHandler(FALLBACK_LOG, mode=mode)
+                fh = logging.FileHandler(fallback, mode=mode)
             except PermissionError as e:
                 log.warning(f"{e.__class__.__name__}: {e}")
                 log.error("Unable to log to primary or fallback file; forcing stdout")
@@ -67,17 +64,17 @@ def init(
     if stdout:
         fmt = "%(name)-20s %(levelname)-8s %(message)s"
         try:
-            import coloredlogs
-
-            coloredlogs.install(
-                level=log_level, logger=_root, fmt=fmt, stream=sys.stdout
-            )
+            import coloredlogs  # type: ignore
         except ImportError:
             sh = logging.StreamHandler(sys.stdout)
             sh.setLevel(log_level)
             sh_fmt = logging.Formatter(fmt)
             sh.setFormatter(sh_fmt)
             _root.addHandler(sh)
+        else:
+            coloredlogs.install(
+                level=log_level, logger=_root, fmt=fmt, stream=sys.stdout
+            )
 
     handlers = [h for h in _root.handlers if h is not _buffer]
     # hopefully temporary: prevent pds4_tools from violating its quiet setting
@@ -89,6 +86,12 @@ def init(
     _root.removeHandler(_buffer)
     initialised = True
     del _buffer
+
+
+def fallback_dir() -> Path:
+    import tempfile
+
+    return Path(tempfile.gettempdir())
 
 
 def _filter_pds4_tools(record):

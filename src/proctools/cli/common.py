@@ -5,7 +5,8 @@ import time
 import typer
 from click import ClickException
 
-from .. import __project__, __version__, logger
+from . import logger
+from .. import __project__, __version__
 from ..util import ExitCode, ExitCodes
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=88)
@@ -42,20 +43,24 @@ def cli_runner(cli: typer.Typer):
             )
             status = ExitCodes.INTERNAL_ERROR
 
-    if not logger.initialised:
-        if status != 0:
-            log.warning(
-                "Logger not initialised; writing debug log to fallback:"
-                f" '{logger.FALLBACK_LOG}'"
-            )
+    log.info(f"Invocation took {time.time() - start:6f}s")
+
+    if status != ExitCodes.SUCCESS and not logger.initialised:
+        from datetime import datetime
+
+        timestamp = datetime.utcnow().strftime("%Y%m%dt%H%M%Sz")
+        fallback = logger.fallback_dir() / f"processing_failure_{timestamp}.log"
+        log.warning(
+            "Logger not initialised; writing debug log to fallback location:"
+            f" '{fallback}'"
+        )
         logger.init(
-            file=logger.FALLBACK_LOG,
-            stdout=bool(status),
+            file=fallback,
+            stdout=False,
             mode="a",
             log_level=logging.DEBUG,
         )
 
-    log.info(f"Invocation took {time.time() - start:6f}s")
     log.info(f"Exiting with code {status}")
     logging.shutdown()
     sys.exit(status.code)
