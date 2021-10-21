@@ -56,7 +56,7 @@ def run(cli: typer.Typer):
         )
         logger.init(
             file=fallback,
-            stdout=False,
+            stdout=(status == ExitCodes.CLI_ERROR),
             mode="a",
             log_level=logging.DEBUG,
         )
