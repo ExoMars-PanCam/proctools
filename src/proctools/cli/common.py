@@ -1,12 +1,12 @@
 import logging
 import sys
 import time
+from typing import Callable
 
 import typer
 from click import ClickException
 
 from . import logger
-from .. import __project__, __version__
 from ..util import ExitCode, ExitCodes
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], max_content_width=88)
@@ -66,7 +66,10 @@ def cli_runner(cli: typer.Typer):
     sys.exit(status.code)
 
 
-def version_callback(value: bool):
-    if value:
-        typer.echo(f"{__project__} v{__version__}")
-        raise typer.Exit()
+def version_callback_for(name: str, version: str) -> Callable[[bool], None]:
+    def version_callback(value: bool) -> None:
+        if value:
+            typer.echo(f"{name} v{version}")
+            raise typer.Exit()
+
+    return version_callback
