@@ -49,9 +49,9 @@ class ProductLoader:
         pattern = "**/*.xml" if recursive else "*.xml"
         for dir_ in directory:
             self._dir_names.append(dir_.name)
-            self._log.debug(f"ingesting products from {dir_.name}")
+            self._log.debug(f"Ingesting products from '{dir_.name}'")
             for path in glob(str(dir_ / pattern), recursive=recursive):
-                path = Path(path).resolve()
+                path = Path(path)
                 try:
                     dp = DataProduct.from_file(path)
                 except (TypeError, ExpatError) as e:
