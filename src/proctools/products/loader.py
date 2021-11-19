@@ -1,5 +1,4 @@
 import logging
-from glob import glob
 from pathlib import Path
 from typing import List, Optional, Union
 from xml.parsers.expat import ExpatError
@@ -46,12 +45,11 @@ class ProductLoader:
         if not isinstance(directory, list):
             directory = [directory]
         loaded = 0
-        pattern = "**/*.xml" if recursive else "*.xml"
         for dir_ in directory:
             self._dir_names.append(dir_.name)
             self._log.debug(f"Ingesting products from '{dir_.name}'")
-            for path in glob(str(dir_ / pattern), recursive=recursive):
-                path = Path(path)
+            glob = dir_.expanduser().rglob if recursive else dir_.expanduser().glob
+            for path in glob("*.xml"):
                 try:
                     dp = DataProduct.from_file(path)
                 except (TypeError, ExpatError) as e:
