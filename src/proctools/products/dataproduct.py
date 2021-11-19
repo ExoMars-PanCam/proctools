@@ -101,12 +101,6 @@ class DataProduct:
         "start": ".//pds:Time_Coordinates/pds:start_date_time",
         "stop": ".//pds:Time_Coordinates/pds:stop_date_time",
         "type": ".//msn:Mission_Information/msn:product_type_name",
-        "sub_instrument": ".//psa:Sub-Instrument/psa:identifier",
-        "camera": ".//psa:Sub-Instrument/psa:identifier",  # sanity alias
-        "filter": ".//img:Optical_Filter/img:filter_number",
-        # TODO: subframe params, temperature, ++ (maybe in sublasses)
-        "exposure_duration": ".//img:Exposure/img:exposure_duration",
-        "model": ".//img_surface:Instrument_Information/img_surface:instrument_version_number",
     }
 
     def __init__(
@@ -137,13 +131,15 @@ class DataProduct:
         )
         self._log = logging.getLogger(self.__class__.__module__)
 
-    def __init_subclass__(cls, type_name=None, **kwargs):
-        if type_name is None:
+    def __init_subclass__(cls, type_name=None, abstract=False, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if abstract:
+            return
+        elif type_name is None:
             raise TypeError(
                 f"{cls.__name__} does not specify the required class parameter"
                 " 'type_name' (its associated PDS4 product type name/mnemonic)"
             )
-        super().__init_subclass__(**kwargs)
         cls.type = type_name
         cls._supported_types[type_name] = cls
 
