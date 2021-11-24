@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "proctools"
-version = "0.1.0"
+version = "0.1.1"
 description = "ProcTools - Common tools for (ExoMars) data product processing software"
 authors = ["Ariel Ladegaard <arl13@aber.ac.uk>"]
 license = "MIT"
@@ -18,17 +18,16 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.6"
-coloredlogs = { version = "^15.0", optional = true }
 importlib-metadata = { version = "^3.7.3", python = "<3.8" } # fallback backport for Python 3.6/3.7
 lxml = "^4.6.3"
 numpy = "^1.19.5"
 passthrough = "0.3.2"
-pds4-tools = "^1.2"
-typer = "^0.3.2"
 #passthrough = {path = "../passthrough", develop = true}
+pds4-tools = "^1.2"
+typer = { version = "^0.3.2", optional = true }
 
 [tool.poetry.extras]
-coloredlogs = ["coloredlogs"]
+cli = ["typer"]
 
 [tool.poetry.dev-dependencies]
 pytest = ">=3.5"
