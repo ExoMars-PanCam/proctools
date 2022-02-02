@@ -98,9 +98,12 @@ class DataProduct:
     type: ClassVar[Optional[str]] = None
     _META_MAP = {
         "lid": ".//pds:Identification_Area/pds:logical_identifier",
-        "start": ".//pds:Time_Coordinates/pds:start_date_time",
-        "stop": ".//pds:Time_Coordinates/pds:stop_date_time",
+        "start": ".//pds:Time_Coordinates/pds:start_date_time",  # alias
+        "start_utc": ".//pds:Time_Coordinates/pds:start_date_time",
+        "stop": ".//pds:Time_Coordinates/pds:stop_date_time",  # alias
+        "stop_utc": ".//pds:Time_Coordinates/pds:stop_date_time",
         "type": ".//msn:Mission_Information/msn:product_type_name",
+        "vid": ".//pds:Identification_Area/pds:version_id",
     }
 
     def __init__(
