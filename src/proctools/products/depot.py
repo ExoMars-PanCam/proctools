@@ -195,7 +195,7 @@ class ProductDepot:
         """
         self._ensure_loaded(type_)
         for idx, candidate in enumerate(self._products[type_]):
-            if candidate.is_applicable(product):
+            if candidate.matches(product):
                 break
         else:
             return None

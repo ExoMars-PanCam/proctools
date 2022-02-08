@@ -1,4 +1,4 @@
-from ..dataproduct import DataProduct
+from .. import DataProduct
 
 PANCAM_META_MAP = {
     **DataProduct._META_MAP,
@@ -47,6 +47,8 @@ PANCAM_META_MAP = {
     "vs_num": ".//emrsp_rm:Mission/emrsp_rm:vertical_survey_number",
     "ovid": ".//emrsp_rm:Mission_Product/emrsp_rm:operational_vid",
 }
+
+del DataProduct
 
 from .ancillary import RadFlatPrm, RadColPrm, RadSsrPrm
 from .observational import Observation, SpecRad, AppCol

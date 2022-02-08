@@ -85,18 +85,21 @@ class DataProduct:
     aligned to product types (as in type templates) extend the base interface based on
     their requirements. Mixins are used to provide feature-based shared functionality.
 
+    Args:
+        init: PDS4 product as presented by `pds4_tools` or `passthrough`
+        path: Optional path of the file the product was loaded from.
+
     Attributes:
-        filename Optional: The name of the file the product was loaded from.
+        filename: The name of the file the product was loaded from.
         label: The XML document tree (lxml or builtin xml).
-        meta: `LabelMeta` object for convenient access to the text of `label` elements
-            exposed by `_META_MAP`.
-        sl Optional: `label`'s structure list, if loaded via `pds4_tools`.
+        meta: `LabelMeta` object exposing those elements of `label` that have been
+            declared in this (sub)class' `_META_MAP`.
+        sl: `label`'s structure list, if loaded via `pds4_tools`.
         template: `label`'s template handler, if loaded via `passthrough`.
     """
 
     _supported_types: ClassVar[dict] = {}
-    type: ClassVar[Optional[str]] = None
-    _META_MAP = {
+    _META_MAP: ClassVar[Dict[str, str]] = {
         "lid": ".//pds:Identification_Area/pds:logical_identifier",
         "start": ".//pds:Time_Coordinates/pds:start_date_time",  # alias
         "start_utc": ".//pds:Time_Coordinates/pds:start_date_time",
@@ -105,16 +108,11 @@ class DataProduct:
         "type": ".//msn:Mission_Information/msn:product_type_name",
         "vid": ".//pds:Identification_Area/pds:version_id",
     }
+    type: ClassVar[str] = None
 
     def __init__(
         self, init: Union[StructureList, Template], path: Optional[Path] = None
     ):
-        """Wrap a PDS4 product for convenient access.
-
-        Args:
-            init: PDS4 product as loaded from `pds4_tools` or `passthrough`
-            path: Optional path of the file used to load the product.
-        """
         if isinstance(init, StructureList):
             self.template = None
             self.sl = init
@@ -125,7 +123,7 @@ class DataProduct:
             self.label = self.template.label
         else:
             raise ValueError(
-                f"`init` must be in the form of a StructureList or Template"
+                f"`init` must take the form of a StructureList or Template"
             )
         self.path = path
         self.filename = getattr(self.path, "name", None)
@@ -152,34 +150,33 @@ class DataProduct:
     def __lt__(self, other: "DataProduct") -> bool:
         return self.meta.lid < other.meta.lid
 
-    def is_applicable(self, other: "DataProduct"):
+    def matches(self, other: "DataProduct") -> bool:
         return NotImplemented
 
     @classmethod
-    def from_file(cls, path: Path, type_: Optional[str] = None) -> "DataProduct":
-        """Find and instantiate the correct DataProduct subclass from `path`
+    def from_file(cls, path: Path) -> "DataProduct":
+        """Find and instantiate the correct DataProduct subclass from `path`.
 
         The subclass is determined by the loaded product's type name
         (`//msn:Mission_Information/msn:product_type_name`).
 
         Args:
             path: Location of the product to be loaded (via `pds4_tools`).
-            type_: Optional product type override (overrides any defined in by the
-                loaded product).
+
+        Returns:
+            An object of the subclass applicable to the product at `path`.
 
         Raises:
-            TypeError: If no expected type is set and the loaded product does not define
-             a type, or if its defined type does not match that of any registered
-             subclass.
+            TypeError: If the loaded product does not declare a type, or if its declared
+                type does not match that of a registered subclass.
         """
-        st = pds4_tools.read(str(path), lazy_load=True, quiet=True)
-        st.label.default_root = "unmodified"  # allow e.g. `pds:` prefixes to work...
-        if "msn" not in st.label.get_namespace_map().values():
-            raise TypeError(f"Product loaded from {path.name} does not define a type")
-        type_ = type_ or st.label.find(cls._META_MAP["type"]).text
-        product = cls._supported_types.get(type_, None)
-        if product is None:
+        sl = pds4_tools.read(str(path), lazy_load=True, quiet=True)
+        sl.label.default_root = "unmodified"  # allow e.g. `pds:` prefixes to work
+        if "msn" not in sl.label.get_namespace_map().values():
+            raise TypeError(f"Product loaded from {path.name} does not declare a type")
+        type_ = sl.label.find(cls._META_MAP["type"]).text
+        if type_ not in cls._supported_types:
             raise TypeError(
                 f"Product '{type_}' loaded from {path} does not match any known type"
             )
-        return product(st, path)
+        return cls._supported_types[type_](sl, path)

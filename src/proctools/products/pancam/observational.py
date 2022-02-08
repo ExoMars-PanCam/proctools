@@ -1,13 +1,12 @@
 import numpy as np
 
-from ..dataproduct import DataProduct
-from ..mixins import ApplicableCameraMixin, SortByStartTimeMixin
+from .. import DataProduct
+from ..mixins import SortStartTimeMixin
 from . import PANCAM_META_MAP
+from .mixins import MatchCameraMixin
 
 
-class Observational(
-    ApplicableCameraMixin, SortByStartTimeMixin, DataProduct, abstract=True
-):
+class Observational(MatchCameraMixin, SortStartTimeMixin, DataProduct, abstract=True):
     _META_MAP = PANCAM_META_MAP
 
 

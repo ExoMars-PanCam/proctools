@@ -1,10 +1,10 @@
+from .. import DataProduct
 from ..adapters import KeyTable, MultiData
-from ..dataproduct import DataProduct
-from ..mixins import ApplicableCameraMixin
+from .mixins import MatchCameraMixin
 from . import PANCAM_META_MAP
 
 
-class Ancillary(ApplicableCameraMixin, DataProduct, abstract=True):
+class Ancillary(MatchCameraMixin, DataProduct, abstract=True):
     _META_MAP = PANCAM_META_MAP
 
 
