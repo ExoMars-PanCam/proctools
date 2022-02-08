@@ -146,7 +146,10 @@ class DataProduct:
         cls.type = type_name
         cls._supported_types[type_name] = cls
 
-    def __lt__(self, other):
+    def __eq__(self, other: "DataProduct") -> bool:
+        return self.meta.lid == other.meta.lid
+
+    def __lt__(self, other: "DataProduct") -> bool:
         return self.meta.lid < other.meta.lid
 
     def is_applicable(self, other: "DataProduct"):
