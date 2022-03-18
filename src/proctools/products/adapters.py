@@ -27,16 +27,26 @@ class KeyTable:
         # select record(s) by value of key field (e.g. where "filter" field is 4)
         match = self.ts[np.where(self.ts[self.key_field] == key)]
         if not match:
+            table_id = (
+                self.ts.meta_data["local_identifier"]
+                if self.ts.meta_data is not None
+                else "<UNKNOWN>"
+            )
+            filename = (
+                Path(self.ts.parent_filename).name
+                if self.ts.parent_filename is not None
+                else "<UNKNOWN>"
+            )
             lid = getattr(
                 self.ts.full_label.find(".//pds:logical_identifier"),
                 "text",
-                "UNKNOWN",
+                "<UNKNOWN>",
             )
             raise KeyError(
                 f"key '{key}' not found in"
                 f" field '{self.key_field}' of"
-                f" table '{self.ts.meta_data['local_identifier']}' in"
-                f" file '{Path(self.ts.parent_filename).name}' of"
+                f" table '{table_id}' in"
+                f" file '{filename}' of"
                 f" product '{lid}'"
             )
         return match
