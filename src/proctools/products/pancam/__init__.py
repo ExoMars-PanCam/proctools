@@ -50,5 +50,5 @@ PANCAM_META_MAP = {
 
 del DataProduct
 
-from .ancillary import RadFlatPrm, RadColPrm, RadSsrPrm
-from .observational import Observation, SpecRad, AppCol
+from .ancillary import RadColPrm, RadFlatPrm, RadSsrPrm
+from .observational import AppCol, Observation, SpecRad

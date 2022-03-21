@@ -1,5 +1,6 @@
-from typing import Union
 from pathlib import Path
+from typing import Union
+
 import numpy as np
 from pds4_tools.reader.general_objects import StructureList
 from pds4_tools.reader.table_objects import TableStructure

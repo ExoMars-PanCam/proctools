@@ -1,5 +1,7 @@
 try:
     import typer as _
+
+    from ._common import CONTEXT_SETTINGS, run, version_callback_for
 except ImportError:
     import logging
 
@@ -9,8 +11,5 @@ except ImportError:
         " unavailable. Install proctools with the 'cli' extras group to enable."
     )
     CONTEXT_SETTINGS, run, version_callback_for = None, None, None
-else:
-    from ._common import CONTEXT_SETTINGS, run, version_callback_for
 
-from . import logger
-from . import status
+from . import logger, status

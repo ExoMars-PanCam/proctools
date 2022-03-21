@@ -5,7 +5,6 @@ import time
 from pathlib import Path
 from typing import Optional
 
-
 # need to keep this at the top due to it being an annotated global (python issue34939)
 initialised: bool = False
 level: Optional[int] = None
