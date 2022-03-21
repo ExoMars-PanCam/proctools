@@ -1,7 +1,12 @@
+from typing import Union
+
+import numpy as np
+from pds4_tools.extern.cached_property import threaded_cached_property
+
 from .. import DataProduct
 from ..adapters import KeyTable, MultiData
-from .mixins import MatchCameraMixin
 from . import PANCAM_META_MAP
+from .mixins import MatchCameraMixin
 
 
 class Ancillary(MatchCameraMixin, DataProduct, abstract=True):
@@ -11,15 +16,15 @@ class Ancillary(MatchCameraMixin, DataProduct, abstract=True):
 class RadFlatPrm(Ancillary, type_name="rad-flat-prm"):
     """PAN-CAL-126"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    @threaded_cached_property
+    def data(self) -> Union[np.ndarray, MultiData]:
         if self.sl is not None:
             if self.meta.camera == "HRC":
-                self.data = self.sl["DATA"].data
+                return self.sl["DATA"].data
             else:
-                self.data = MultiData(self.sl, "DATA_{:02d}")
+                return MultiData(self.sl, "DATA_{:02d}")
         else:
-            self.data = None  # TODO: data blank from Template def
+            return None  # TODO: data blanks from Template defs
 
 
 class RadSsrPrm(Ancillary, type_name="rad-ssr-prm"):

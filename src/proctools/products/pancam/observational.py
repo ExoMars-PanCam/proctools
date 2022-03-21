@@ -1,4 +1,5 @@
 import numpy as np
+from pds4_tools.extern.cached_property import threaded_cached_property
 
 from .. import DataProduct
 from ..mixins import SortStartTimeMixin
@@ -13,35 +14,59 @@ class Observational(MatchCameraMixin, SortStartTimeMixin, DataProduct, abstract=
 class Observation(Observational, type_name="observation"):
     """PAN-PP-200"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    @threaded_cached_property
+    def data(self) -> np.ndarray:
         if self.sl is not None:
-            self.data = self.sl["SCIENCE_IMAGE_DATA"].data
+            return self.sl["SCIENCE_IMAGE_DATA"].data
         else:
-            self.data = None  # TODO: data blanks from Template def
+            return None  # TODO: data blanks from Template def
 
 
 class SpecRad(Observational, type_name="spec-rad"):
     """PAN-PP-220"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    @threaded_cached_property
+    def data(self) -> np.ndarray:
         if self.sl is not None:
-            self.data: np.ndarray = self.sl["DATA"].data
-            self.dq: np.ndarray = self.sl["QUALITY"].data
-            self.err: np.ndarray = self.sl["UNCERTAINTY"].data
+            return self.sl["DATA"].data
         else:
-            self.data: np.ndarray = None  # TODO: data blanks from Template defs
+            return None  # TODO: data blanks from Template defs
+
+    @threaded_cached_property
+    def dq(self) -> np.ndarray:
+        if self.sl is not None:
+            return self.sl["QUALITY"].data
+        else:
+            return None  # TODO: data blanks from Template defs
+
+    @threaded_cached_property
+    def err(self) -> np.ndarray:
+        if self.sl is not None:
+            return self.sl["UNCERTAINTY"].data
+        else:
+            return None  # TODO: data blanks from Template defs
 
 
 class AppCol(Observational, type_name="app-col"):
     """PAN-PP-221"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    @threaded_cached_property
+    def data(self) -> np.ndarray:
         if self.sl is not None:
-            self.data: np.ndarray = self.sl["DATA"].data
-            self.dq: np.ndarray = self.sl["QUALITY"].data
-            self.err: np.ndarray = self.sl["UNCERTAINTY"].data
+            return self.sl["DATA"].data
         else:
-            self.data: np.ndarray = None  # TODO: data blanks from Template defs
+            return None  # TODO: data blanks from Template defs
+
+    @threaded_cached_property
+    def dq(self) -> np.ndarray:
+        if self.sl is not None:
+            return self.sl["QUALITY"].data
+        else:
+            return None  # TODO: data blanks from Template defs
+
+    @threaded_cached_property
+    def err(self) -> np.ndarray:
+        if self.sl is not None:
+            return self.sl["UNCERTAINTY"].data
+        else:
+            return None  # TODO: data blanks from Template defs
