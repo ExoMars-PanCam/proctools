@@ -130,3 +130,6 @@ dmypy.json
 
 # Visual Studio Code
 .vscode/
+
+# Dependency tree/state; not currently required
+poetry.lock
