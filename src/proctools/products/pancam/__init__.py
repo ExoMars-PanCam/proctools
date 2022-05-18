@@ -1,4 +1,4 @@
-from .. import DataProduct
+from ..dataproduct import DataProduct
 
 PANCAM_META_MAP = {
     **DataProduct._META_MAP,

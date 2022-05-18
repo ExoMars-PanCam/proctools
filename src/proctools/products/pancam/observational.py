@@ -1,7 +1,7 @@
 import numpy as np
 from pds4_tools.extern.cached_property import threaded_cached_property
 
-from .. import DataProduct
+from ..dataproduct import DataProduct
 from ..mixins import SortStartTimeMixin
 from . import PANCAM_META_MAP
 from .mixins import MatchCameraMixin
