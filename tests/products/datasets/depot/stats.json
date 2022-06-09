@@ -1,0 +1,8 @@
+{
+    "types": {
+        "observation": 5,
+        "rad-flat-prm": 3,
+        "rad-ssr-prm": 3
+    },
+    "num_invalid": 1
+}

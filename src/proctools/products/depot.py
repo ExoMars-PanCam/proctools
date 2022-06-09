@@ -68,7 +68,7 @@ class ProductDepot:
         Returns:
             The number of products successfully loaded from `directory`.
         """
-        if not isinstance(directory, list):
+        if not isinstance(directory, Sequence):
             directory = [directory]
         num_loaded = 0
         products = self._products
@@ -109,7 +109,7 @@ class ProductDepot:
 
         Args:
             type_: Restrict the retrieval to products of a given type name.
-            filter_: Only consider products for which filter_(product, usage) is True.
+            filter_: Only consider products for which filter_(product) is True.
             usage_status: Only consider products with a given Usage status or statuses.
 
         Returns:
@@ -118,11 +118,16 @@ class ProductDepot:
 
         Raises:
             KeyError: If the depot has never been loaded with products of `type_`.
+            TypeError: In the event that `usage_status` is not a member of Status
+                (or a Sequence thereof).
         """
         if type_ is not None:
             self._ensure_loaded(type_)
-        if usage_status is not None and not isinstance(usage_status, Sequence):
-            usage_status = [usage_status]
+        if usage_status is not None:
+            if not isinstance(usage_status, Sequence):
+                usage_status = [usage_status]
+            for _us in usage_status:
+                self._ensure_valid(_us)
         selection = defaultdict(list)
         for prod_type in [type_] if type_ is not None else self.types:
             for prod in self._products[prod_type]:
@@ -182,13 +187,10 @@ class ProductDepot:
         """
         type_ = product.type
         self._ensure_loaded(type_)
-        if not isinstance(usage_status, ProductDepot.Status):
-            raise TypeError(
-                f"usage status '{usage_status}' is not a member of ProductDepot.Status"
-            )
         lid = product.meta.lid
         if lid not in self._usage[type_]:
             return False
+        self._ensure_valid(usage_status)
         self._usage[type_][lid] = usage_status
         return True
 
@@ -235,12 +237,14 @@ class ProductDepot:
 
         Raises:
             KeyError: If the depot has never been loaded with products of `type_`.
+            TypeError: In the event that `usage_status` is not a member of Status.
         """
         self._ensure_loaded(type_)
         prods = self._products[type_]
         usage = self._usage[type_]
         if usage_status is None:
             return len(prods) if ignore_released else len(usage)
+        self._ensure_valid(usage_status)
         if ignore_released:
             return len([p for p in prods if usage[p.meta.lid] == usage_status])
         return len([s for s in usage.values() if s == usage_status])
@@ -272,4 +276,10 @@ class ProductDepot:
         if type_ not in self._products:
             raise KeyError(
                 f"Depot has not been loaded with any products of type '{type_}'"
+            )
+
+    def _ensure_valid(self, usage_status: any):
+        if not isinstance(usage_status, ProductDepot.Status):
+            raise TypeError(
+                f"usage status '{usage_status}' is not a member of ProductDepot.Status"
             )
