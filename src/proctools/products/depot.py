@@ -2,7 +2,7 @@ import logging
 import enum
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Sequence, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 from xml.parsers.expat import ExpatError
 
 from . import DataProduct
@@ -278,7 +278,7 @@ class ProductDepot:
                 f"Depot has not been loaded with any products of type '{type_}'"
             )
 
-    def _ensure_valid(self, usage_status: any):
+    def _ensure_valid(self, usage_status: Any) -> None:
         if not isinstance(usage_status, ProductDepot.Status):
             raise TypeError(
                 f"usage status '{usage_status}' is not a member of ProductDepot.Status"

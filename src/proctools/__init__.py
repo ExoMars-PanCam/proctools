@@ -11,4 +11,4 @@ __description__ = _dist_meta["Summary"]
 __project__ = _dist_meta["Name"]
 __url__ = _dist_meta["Home-Page"]
 __version__ = _dist_meta["Version"]
-del _dist_meta
+del _dist_meta, importlib_metadata
