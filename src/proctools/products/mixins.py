@@ -1,4 +1,3 @@
-from passthrough.extensions.pt.datetime import PDSDatetime
 
 
 class SortStartTimeMixin:
@@ -6,6 +5,6 @@ class SortStartTimeMixin:
 
     def __lt__(self, other: "SortStartTimeMixin") -> bool:
         return (
-            PDSDatetime(self.meta.start).datetime  # type: ignore
-            < PDSDatetime(other.meta.start).datetime  # type: ignore
+            self.meta.start.datetime  # type: ignore
+            < other.meta.start.datetime  # type: ignore
         )

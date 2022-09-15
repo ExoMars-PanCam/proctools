@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "proctools"
-version = "0.2.1"
-description = "ProcTools - Common tools for (ExoMars) data product processing software"
+version = "0.2.2"
+description = "ProcTools - Common tools for PDS4 data product processing"
 authors = ["Ariel Ladegaard <arl13@aber.ac.uk>"]
 license = "MIT"
 repository = "https://github.com/ExoMars-PanCam/proctools"
@@ -11,16 +11,20 @@ classifiers = [
   "Environment :: Console",
   "Intended Audience :: Developers",
   "Intended Audience :: Science/Research",
-  "Topic :: Scientific/Engineering :: Physics",
   "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Image Processing",
+  "Topic :: Scientific/Engineering :: Physics",
   "Topic :: Utilities",
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.6.1"
 importlib-metadata = { version = "^3.7.3", python = "<3.8" } # fallback backport for Python 3.6/3.7
 lxml = "^4.6.3"
-numpy = "^1.19.5"
+numpy = [
+  { version = "==1.19.5", python = ">=3.6,<3.8" },
+  { version = "^1.22.0", python = ">=3.8" },
+]
 passthrough = "0.3.2"
 #passthrough = {path = "../passthrough", develop = true}
 pds4-tools = "^1.2"
@@ -32,7 +36,7 @@ cli = ["typer"]
 [tool.poetry.dev-dependencies]
 pytest = ">=3.5"
 black = "^20.8b1"
-isort = "^5.8.0"
+isort = "^5.10.1"
 
 [tool.black]
 line-length = 88

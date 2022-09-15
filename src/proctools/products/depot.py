@@ -87,10 +87,12 @@ class ProductDepot:
                     type_ in products
                     and product in products[type_]  # assume DP sub impl sensible eq
                 ):
-                    self._log.warning(f"'{product.meta.lid}' already loaded; ignoring")
+                    self._log.warning(
+                        f"'{product.meta['lid']}' already loaded; ignoring"
+                    )
                     continue
                 products[type_].append(product)
-                usage[type_][product.meta.lid] = self.Status.loaded
+                usage[type_][product.meta["lid"]] = self.Status.loaded
                 num_loaded += 1
         for type_ in products:
             products[type_].sort()
@@ -131,7 +133,7 @@ class ProductDepot:
         selection = defaultdict(list)
         for prod_type in [type_] if type_ is not None else self.types:
             for prod in self._products[prod_type]:
-                prod_lid = prod.meta.lid
+                prod_lid = prod.meta["lid"]
                 prod_status = self._usage[prod_type][prod_lid]
                 if usage_status is not None and prod_status not in usage_status:
                     continue
@@ -165,7 +167,7 @@ class ProductDepot:
         self._ensure_loaded(type_)
         for candidate in self._products[type_]:
             if candidate.matches(product):
-                lid = candidate.meta.lid
+                lid = candidate.meta["lid"]
                 if self._usage[type_][lid] == self.Status.loaded:
                     self._usage[type_][lid] = self.Status.retrieved
                 return candidate
@@ -187,7 +189,7 @@ class ProductDepot:
         """
         type_ = product.type
         self._ensure_loaded(type_)
-        lid = product.meta.lid
+        lid = product.meta["lid"]
         if lid not in self._usage[type_]:
             return False
         self._ensure_valid(usage_status)
@@ -246,7 +248,7 @@ class ProductDepot:
             return len(prods) if ignore_released else len(usage)
         self._ensure_valid(usage_status)
         if ignore_released:
-            return len([p for p in prods if usage[p.meta.lid] == usage_status])
+            return len([p for p in prods if usage[p.meta["lid"]] == usage_status])
         return len([s for s in usage.values() if s == usage_status])
 
     def usage_summary(
@@ -272,7 +274,7 @@ class ProductDepot:
                 summary[prod_type][prod_status].append(prod_lid)
         return summary if type_ is None else summary[type_]  # type: ignore
 
-    def _ensure_loaded(self, type_: str):
+    def _ensure_loaded(self, type_: str) -> None:
         if type_ not in self._products:
             raise KeyError(
                 f"Depot has not been loaded with any products of type '{type_}'"
