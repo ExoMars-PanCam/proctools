@@ -119,7 +119,10 @@ class DataProduct:
         sl = pds4_tools.read(str(path), lazy_load=True, quiet=True)
         sl.label.default_root = "unmodified"  # allow e.g. `pds:` prefixes to work
         # FIXME: exm-centric; what's a generalised alternative?
-        type_ = sl.label.find(cls._META_MAP["type"].path)
+        if "msn" not in sl.label.get_namespace_map().values():
+            type_ = None
+        else:
+            type_ = sl.label.find(cls._META_MAP["type"].path)
         if type_ is not None:
             type_ = type_.text
         else:
