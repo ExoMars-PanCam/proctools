@@ -82,25 +82,25 @@ class ProductDepot:
                 except (TypeError, ExpatError, ValueError) as e:
                     self._log.warning(f"{e}; ignoring")
                     continue
-                type_ = product.type
+                ptype = product.type
                 if (
-                    type_ in products
-                    and product in products[type_]  # assume DP sub impl sensible eq
+                    ptype in products
+                    and product in products[ptype]  # assume DP sub impl sensible eq
                 ):
                     self._log.warning(
                         f"'{product.meta['lid']}' already loaded; ignoring"
                     )
                     continue
-                products[type_].append(product)
-                usage[type_][product.meta["lid"]] = self.Status.loaded
+                products[ptype].append(product)
+                usage[ptype][product.meta["lid"]] = self.Status.loaded
                 num_loaded += 1
-        for type_ in products:
-            products[type_].sort()
+        for ptype in products:
+            products[ptype].sort()
         return num_loaded
 
     def retrieve(
         self,
-        type_: Optional[str] = None,
+        ptype: Optional[str] = None,
         filter_: Optional[Callable[[DataProduct], bool]] = None,
         usage_status: Optional[Union[Status, Sequence[Optional[Status]]]] = None,
     ) -> Union[List[DataProduct], Dict[str, List[DataProduct]]]:
@@ -110,28 +110,28 @@ class ProductDepot:
         to Status.retrieved.
 
         Args:
-            type_: Restrict the retrieval to products of a given type name.
+            ptype: Restrict the retrieval to products of a given type name.
             filter_: Only consider products for which filter_(product) is True.
             usage_status: Only consider products with a given Usage status or statuses.
 
         Returns:
-            A sorted list of retrieved products if `type_` is given, else a dictionary
+            A sorted list of retrieved products if `ptype` is given, else a dictionary
             mapping the name of each loaded type to its list of products.
 
         Raises:
-            KeyError: If the depot has never been loaded with products of `type_`.
+            KeyError: If the depot has never been loaded with products of `ptype`.
             TypeError: In the event that `usage_status` is not a member of Status
                 (or a Sequence thereof).
         """
-        if type_ is not None:
-            self._ensure_loaded(type_)
+        if ptype is not None:
+            self._ensure_loaded(ptype)
         if usage_status is not None:
             if not isinstance(usage_status, Sequence):
                 usage_status = [usage_status]
             for _us in usage_status:
                 self._ensure_valid(_us)
         selection = defaultdict(list)
-        for prod_type in [type_] if type_ is not None else self.types:
+        for prod_type in [ptype] if ptype is not None else self.types:
             for prod in self._products[prod_type]:
                 prod_lid = prod.meta["lid"]
                 prod_status = self._usage[prod_type][prod_lid]
@@ -142,34 +142,34 @@ class ProductDepot:
                 if prod_status == self.Status.loaded:
                     self._usage[prod_type][prod_lid] = self.Status.retrieved
                 selection[prod_type].append(prod)
-        return selection if type_ is None else selection[type_]
+        return selection if ptype is None else selection[ptype]
 
-    def match(self, type_: str, product: DataProduct) -> Optional[DataProduct]:
-        """Find and return a product of `type_` which is a match for `product`.
+    def match(self, ptype: str, product: DataProduct) -> Optional[DataProduct]:
+        """Find and return a product of `ptype` which is a match for `product`.
 
         Search order and matching criteria are dictated by the class associated with
-        `type_`; see `DataProduct` for more information.
+        `ptype`; see `DataProduct` for more information.
 
         Matched products with usage Status.loaded will automatically have this updated
         to Status.retrieved.
 
         Args:
-            type_: Product type to consider when searching for a match.
+            ptype: Product type to consider when searching for a match.
             product: Target product to present to prospective matches.
 
         Returns:
-            The first instance of `type_` that matches `product` if one exists, else
+            The first instance of `ptype` that matches `product` if one exists, else
             None.
 
         Raises:
-            KeyError: If the depot has never been loaded with products of `type_`.
+            KeyError: If the depot has never been loaded with products of `ptype`.
         """
-        self._ensure_loaded(type_)
-        for candidate in self._products[type_]:
+        self._ensure_loaded(ptype)
+        for candidate in self._products[ptype]:
             if candidate.matches(product):
                 lid = candidate.meta["lid"]
-                if self._usage[type_][lid] == self.Status.loaded:
-                    self._usage[type_][lid] = self.Status.retrieved
+                if self._usage[ptype][lid] == self.Status.loaded:
+                    self._usage[ptype][lid] = self.Status.retrieved
                 return candidate
         return None
 
@@ -187,13 +187,13 @@ class ProductDepot:
             KeyError: If the depot has never been loaded with products of `product.type`.
             TypeError: In the event that `usage_status` is not a member of Status.
         """
-        type_ = product.type
-        self._ensure_loaded(type_)
+        ptype = product.type
+        self._ensure_loaded(ptype)
         lid = product.meta["lid"]
-        if lid not in self._usage[type_]:
+        if lid not in self._usage[ptype]:
             return False
         self._ensure_valid(usage_status)
-        self._usage[type_][lid] = usage_status
+        self._usage[ptype][lid] = usage_status
         return True
 
     def release(self, product: DataProduct) -> bool:
@@ -213,37 +213,37 @@ class ProductDepot:
         Raises:
             KeyError: If the depot has never been loaded with products of `product.type`.
         """
-        type_ = product.type
-        self._ensure_loaded(type_)
+        ptype = product.type
+        self._ensure_loaded(ptype)
         try:
-            self._products[type_].remove(product)
+            self._products[ptype].remove(product)
         except ValueError:
             return False
         return True
 
     def count(
         self,
-        type_: str,
+        ptype: str,
         usage_status: Optional[Status] = None,
         ignore_released: bool = False,
     ) -> int:
         """Return the number of products in the depot of a given type and usage status.
 
         Args:
-            type_: The product type to count instances of.
+            ptype: The product type to count instances of.
             usage_status: Only count products of a given Status.
             ignore_released: Don't count products that have been released from the depot.
 
         Returns:
-            The number of `type_` products matching the `usage_status`.
+            The number of `ptype` products matching the `usage_status`.
 
         Raises:
-            KeyError: If the depot has never been loaded with products of `type_`.
+            KeyError: If the depot has never been loaded with products of `ptype`.
             TypeError: In the event that `usage_status` is not a member of Status.
         """
-        self._ensure_loaded(type_)
-        prods = self._products[type_]
-        usage = self._usage[type_]
+        self._ensure_loaded(ptype)
+        prods = self._products[ptype]
+        usage = self._usage[ptype]
         if usage_status is None:
             return len(prods) if ignore_released else len(usage)
         self._ensure_valid(usage_status)
@@ -252,32 +252,32 @@ class ProductDepot:
         return len([s for s in usage.values() if s == usage_status])
 
     def usage_summary(
-        self, type_: Optional[str] = None
+        self, ptype: Optional[str] = None
     ) -> Union[Dict[Status, Sequence[str]], Dict[str, Dict[Status, Sequence[str]]]]:
         """Return a summary of the usage statuses of the depot's products.
 
         Args:
-            type_: Restrict the summary to products of a given type name.
+            ptype: Restrict the summary to products of a given type name.
 
         Returns:
-            A dictionary mapping usage statuses to product LIDs if `type_` is given,
+            A dictionary mapping usage statuses to product LIDs if `ptype` is given,
             else a dictionary mapping the name of each loaded type to its status map.
 
         Raises:
-            KeyError: If the depot has never been loaded with products of `type_`.
+            KeyError: If the depot has never been loaded with products of `ptype`.
         """
-        if type_ is not None:
-            self._ensure_loaded(type_)
+        if ptype is not None:
+            self._ensure_loaded(ptype)
         summary = defaultdict(lambda: defaultdict(list))
-        for prod_type in [type_] if type_ is not None else self.types:
+        for prod_type in [ptype] if ptype is not None else self.types:
             for prod_lid, prod_status in self._usage[prod_type].items():
                 summary[prod_type][prod_status].append(prod_lid)
-        return summary if type_ is None else summary[type_]  # type: ignore
+        return summary if ptype is None else summary[ptype]  # type: ignore
 
-    def _ensure_loaded(self, type_: str) -> None:
-        if type_ not in self._products:
+    def _ensure_loaded(self, ptype: str) -> None:
+        if ptype not in self._products:
             raise KeyError(
-                f"Depot has not been loaded with any products of type '{type_}'"
+                f"Depot has not been loaded with any products of type '{ptype}'"
             )
 
     def _ensure_valid(self, usage_status: Any) -> None:

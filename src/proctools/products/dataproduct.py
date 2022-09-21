@@ -120,15 +120,15 @@ class DataProduct:
         sl.label.default_root = "unmodified"  # allow e.g. `pds:` prefixes to work
         # FIXME: exm-centric; what's a generalised alternative?
         if "msn" not in sl.label.get_namespace_map().values():
-            type_ = None
+            ptype = None
         else:
-            type_ = sl.label.find(cls._META_MAP["type"].path)
-        if type_ is not None:
-            type_ = type_.text
+            ptype = sl.label.find(cls._META_MAP["type"].path)
+        if ptype is not None:
+            ptype = ptype.text
         else:
             raise TypeError(f"Product loaded from {path.name} does not declare a type")
-        if type_ not in cls._supported_types:
+        if ptype not in cls._supported_types:
             raise TypeError(
-                f"Product '{type_}' loaded from {path} does not match any known type"
+                f"Product '{ptype}' loaded from {path} does not match any known type"
             )
-        return cls._supported_types[type_](sl, path)
+        return cls._supported_types[ptype](sl, path)
