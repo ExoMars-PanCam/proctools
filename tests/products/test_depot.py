@@ -143,16 +143,16 @@ class TestRetrieve:
         # AND this dict contains all loaded types
         assert set(retrieved.keys()) == set(dataset.stats["types"].keys())
         # AND each type in this dict maps to a list of the corresponding products
-        for type_, prods in retrieved.items():
+        for ptype, prods in retrieved.items():
             assert isinstance(prods, list)
-            assert len(prods) == dataset.stats["types"][type_]
+            assert len(prods) == dataset.stats["types"][ptype]
 
-    # @pytest.mark.parametrize("type_,num_expected", dataset.stats["types"].items())
-    def test_retrieve_by_type(self, loaded_depot, dataset):  # , type_, num_expected):
+    # @pytest.mark.parametrize("ptype,num_expected", dataset.stats["types"].items())
+    def test_retrieve_by_type(self, loaded_depot, dataset):  # , ptype, num_expected):
         # GIVEN a loaded depot
-        for type_, num_expected in dataset.stats["types"].items():
+        for ptype, num_expected in dataset.stats["types"].items():
             # WHEN products of a given type are retrieved
-            retrieved = loaded_depot.retrieve(type_=type_)
+            retrieved = loaded_depot.retrieve(ptype=ptype)
             # THEN a list of the corresponding products is returned
             assert isinstance(retrieved, list)
             assert len(retrieved) == num_expected
@@ -163,7 +163,7 @@ class TestRetrieve:
         # product
         # THEN a KeyError should be raised
         with pytest.raises(KeyError):
-            loaded_depot.retrieve(type_="invalid_type")
+            loaded_depot.retrieve(ptype="invalid_type")
 
     def test_retrieve_with_filter(self, loaded_depot):
         """
@@ -173,11 +173,11 @@ class TestRetrieve:
         """
         # GIVEN a loaded depot (where we have ensured, for the purposes of this test,
         # that a type which works with our filter is present...)
-        type_ = "observation"
+        ptype = "observation"
         cam = "WACL"
-        if type_ not in loaded_depot.types:
+        if ptype not in loaded_depot.types:
             pytest.fail(
-                f"Test requires products of type '{type_}', but none are present in the"
+                f"Test requires products of type '{ptype}', but none are present in the"
                 " provided dataset."
             )
         # WHEN products of a given type are retrieved, filtered by a callable
@@ -186,20 +186,20 @@ class TestRetrieve:
             assert isinstance(prod, DataProduct)
             return prod.meta.camera == cam
 
-        filtered = loaded_depot.retrieve(type_=type_, filter_=cam_filter)
+        filtered = loaded_depot.retrieve(ptype=ptype, filter_=cam_filter)
         # THEN the set of retrieved products should be equivalent to a reference set
         # created by manually applying the same filter to an unconstrained retrieve.
         reference = {
-            prod.meta.lid
-            for prod in loaded_depot.retrieve(type_=type_)
+            prod.meta["lid"]
+            for prod in loaded_depot.retrieve(ptype=ptype)
             if cam_filter(prod)
         }
         if len(reference) == 0:
             pytest.fail(
-                f"Test requires products of type '{type_}' and cam '{cam}', but none"
+                f"Test requires products of type '{ptype}' and cam '{cam}', but none"
                 " are present in the provided dataset."
             )
-        assert {prod.meta.lid for prod in filtered} == reference
+        assert {prod.meta["lid"] for prod in filtered} == reference
 
     def test_retrieve_assigns_usage_status(self, loaded_depot):
         """
@@ -216,12 +216,12 @@ class TestRetrieve:
             }
         # (B) GIVEN a depot containing products with statuses other than Status.loaded
         # (mark a product of any type as Status.processed)
-        type_ = loaded_depot.types[0]
-        loaded_depot.mark(retrieved[type_][0], ProductDepot.Status.processed)
+        ptype = loaded_depot.types[0]
+        loaded_depot.mark(retrieved[ptype][0], ProductDepot.Status.processed)
         # (B) WHEN such products are retrieved
-        _ = loaded_depot.retrieve(type_)
+        _ = loaded_depot.retrieve(ptype)
         # (B) THEN their usage status should be retained
-        assert ProductDepot.Status.processed in loaded_depot.usage_summary(type_)
+        assert ProductDepot.Status.processed in loaded_depot.usage_summary(ptype)
 
     def test_retrieve_by_usage_status(self, loaded_depot, dataset):
         """
@@ -229,21 +229,21 @@ class TestRetrieve:
         """
         # (A) GIVEN a loaded depot containing multiple products of a given type
         testable_types = [t for t, n in dataset.stats["types"].items() if n > 1]
-        type_ = testable_types[0]
+        ptype = testable_types[0]
         # (A) WHEN products are retrieved by a usage status not held by any product
         processed = loaded_depot.retrieve(
-            type_, usage_status=ProductDepot.Status.processed
+            ptype, usage_status=ProductDepot.Status.processed
         )
         # (A) THEN no products should be returned
         assert len(processed) == 0
 
         # (B) GIVEN products with mixed usage statuses
-        # (mark one product of type_ as Status.processed)
-        processed_product = loaded_depot.retrieve(type_)[0]
+        # (mark one product of ptype as Status.processed)
+        processed_product = loaded_depot.retrieve(ptype)[0]
         loaded_depot.mark(processed_product, ProductDepot.Status.processed)
         # (B) WHEN products are retrieved by a given usage status
         processed = loaded_depot.retrieve(
-            type_, usage_status=ProductDepot.Status.processed
+            ptype, usage_status=ProductDepot.Status.processed
         )
         # (B) THEN only product(s) of that status should be returned
         assert len(processed) == 1
@@ -252,13 +252,13 @@ class TestRetrieve:
         # (C) WHEN products are retrieved by multiple usage statuses
         statuses = [ProductDepot.Status.retrieved, ProductDepot.Status.processed]
         retrieved_lids = [
-            prod.meta.lid
-            for prod in loaded_depot.retrieve(type_, usage_status=statuses)
+            prod.meta["lid"]
+            for prod in loaded_depot.retrieve(ptype, usage_status=statuses)
         ]
         # (C) THEN all products matching one of those statuses should be returned
         reference_lids = [
             lid
-            for status, lids in loaded_depot.usage_summary(type_).items()
+            for status, lids in loaded_depot.usage_summary(ptype).items()
             for lid in lids
             if status in statuses
         ]
@@ -319,7 +319,7 @@ class TestMatch:
             ProductDepot.Status.retrieved
         )
         assert lids_of_retrieved is not None
-        assert lids_of_retrieved == [matched.meta.lid]
+        assert lids_of_retrieved == [matched.meta["lid"]]
 
 
 class TestMark:
@@ -328,20 +328,20 @@ class TestMark:
         # GIVEN a loaded depot
         # WHEN a given product is marked with a usage status
         # THEN a success should be reported
-        type_ = loaded_depot.types[0]
-        target = loaded_depot.retrieve(type_)[0]
+        ptype = loaded_depot.types[0]
+        target = loaded_depot.retrieve(ptype)[0]
         assert loaded_depot.mark(target, status) == True
         # AND the product's new usage status should take effect (here: via summary)
-        lids_of_status = loaded_depot.usage_summary(type_).get(status)
+        lids_of_status = loaded_depot.usage_summary(ptype).get(status)
         assert lids_of_status is not None
-        assert target.meta.lid in lids_of_status
+        assert target.meta["lid"] in lids_of_status
 
     def test_mark_invalid_usage_status(self, loaded_depot):
         # GIVEN a loaded depot
         # WHEN attempting to mark a product with an invalid usage status
         # THEN a TypeError should be raised
-        type_ = loaded_depot.types[0]
-        target = loaded_depot.retrieve(type_)[0]
+        ptype = loaded_depot.types[0]
+        target = loaded_depot.retrieve(ptype)[0]
         with pytest.raises(TypeError):
             loaded_depot.mark(target, "invalid_usage_status")
 
@@ -349,8 +349,8 @@ class TestMark:
         # GIVEN a loaded depot
         # WHEN attempting to mark a product released from the depot with a usage status
         # THEN a success should be reported
-        type_ = loaded_depot.types[0]
-        target = loaded_depot.retrieve(type_)[0]
+        ptype = loaded_depot.types[0]
+        target = loaded_depot.retrieve(ptype)[0]
         loaded_depot.release(target)
         assert loaded_depot.mark(target, ProductDepot.Status.processed) == True
 
@@ -359,10 +359,10 @@ class TestMark:
         # WHEN attempting to mark a product of a valid type but which has never been
         # loaded into the depot (here: simulated via a mocked LID...)
         # THEN a failure should be reported
-        type_ = loaded_depot.types[0]
-        target = loaded_depot.retrieve(type_)[0]
+        ptype = loaded_depot.types[0]
+        target = loaded_depot.retrieve(ptype)[0]
         loaded_depot.release(target)
-        target.meta.lid = "foreign_lid"
+        target.meta["lid"] = "foreign_lid"
         assert loaded_depot.mark(target, ProductDepot.Status.processed) == False
 
 
@@ -370,15 +370,15 @@ class TestRelease:
     def test_release(self, loaded_depot):
         """FIXME: relative refcount check does not guarantee absence, just a drop."""
         # GIVEN a loaded depot
-        type_ = loaded_depot.types[0]
-        count = loaded_depot.count(type_)
-        target = loaded_depot.retrieve(type_)[0]
+        ptype = loaded_depot.types[0]
+        count = loaded_depot.count(ptype)
+        target = loaded_depot.retrieve(ptype)[0]
         refcount = sys.getrefcount(target)
         # (A) WHEN requesting the release of a product present in the depot
         # (A) THEN a success should be reported
         assert loaded_depot.release(target) == True
         # (A) AND the product should not be part of any retrieves
-        assert target not in loaded_depot.retrieve(type_)
+        assert target not in loaded_depot.retrieve(ptype)
         # (A) AND the depot should drop direct references to the product
         assert sys.getrefcount(target) == refcount - 1
 
@@ -394,12 +394,12 @@ class TestRelease:
 
 
 class TestCount:
-    # @pytest.mark.parametrize("type_,num_expected", dataset.stats["types"].items())
-    def test_count_by_type(self, loaded_depot, dataset):  # , type_, num_expected):
+    # @pytest.mark.parametrize("ptype,num_expected", dataset.stats["types"].items())
+    def test_count_by_type(self, loaded_depot, dataset):  # , ptype, num_expected):
         # GIVEN a loaded depot
-        for type_, num_expected in dataset.stats["types"].items():
+        for ptype, num_expected in dataset.stats["types"].items():
             # WHEN requesting a count of products of a given type
-            num_counted = loaded_depot.count(type_)
+            num_counted = loaded_depot.count(ptype)
             # THEN and integer should be returned
             assert isinstance(num_counted, int)
             # AND only products of the given type should be counted
@@ -414,26 +414,26 @@ class TestCount:
 
     def test_count_by_usage_status(self, loaded_depot, dataset):
         # GIVEN a loaded depot containing products of different usage statuses
-        type_ = loaded_depot.types[0]
-        mark = loaded_depot.retrieve(type_)[0]
+        ptype = loaded_depot.types[0]
+        mark = loaded_depot.retrieve(ptype)[0]
         assert loaded_depot.mark(mark, ProductDepot.Status.processed)
         # WHEN requesting a count constrained to a given usage status
         # THEN only products of that usage status should be counted
         assert (
-            loaded_depot.count(type_, usage_status=ProductDepot.Status.retrieved)
-            == dataset.stats["types"][type_] - 1
+            loaded_depot.count(ptype, usage_status=ProductDepot.Status.retrieved)
+            == dataset.stats["types"][ptype] - 1
         )
 
     def test_count_ignore_released(self, loaded_depot, dataset):
         # GIVEN a loaded depot where products have been released
-        type_ = loaded_depot.types[0]
-        release = loaded_depot.retrieve(type_)[0]
+        ptype = loaded_depot.types[0]
+        release = loaded_depot.retrieve(ptype)[0]
         assert loaded_depot.release(release)
         # WHEN requesting a count of products in the depot
         # THEN released products should not be counted
         assert (
-            loaded_depot.count(type_, ignore_released=True)
-            == dataset.stats["types"][type_] - 1
+            loaded_depot.count(ptype, ignore_released=True)
+            == dataset.stats["types"][ptype] - 1
         )
 
 
@@ -462,18 +462,18 @@ class TestUsageSummary:
         # AND all loaded types from the source dataset are present
         assert set(summary.keys()) == set(dataset.stats["types"].keys())
         # AND each type maps to a well-formed dict of usage statuses (cont'd in helper)
-        for type_, statuses in summary.items():
+        for ptype, statuses in summary.items():
             self._assert_well_formed_status_dict(
-                statuses, dataset.stats["types"][type_]
+                statuses, dataset.stats["types"][ptype]
             )
 
-    # @pytest.mark.parametrize("type_,num_expected", dataset.stats["types"].items())
+    # @pytest.mark.parametrize("ptype,num_expected", dataset.stats["types"].items())
     def test_usage_summary_by_type(
         self, loaded_depot, dataset
-    ):  # , type_, num_expected):
+    ):  # , ptype, num_expected):
         # GIVEN a depot loaded with an expected number of products of a target type
-        for type_, num_expected in dataset.stats["types"].items():
+        for ptype, num_expected in dataset.stats["types"].items():
             # WHEN a usage summary is requested for the type
-            statuses = loaded_depot.usage_summary(type_)
+            statuses = loaded_depot.usage_summary(ptype)
             # THEN a well-formed dict of statuses is returned (cont'd in helper)
             self._assert_well_formed_status_dict(statuses, num_expected)
