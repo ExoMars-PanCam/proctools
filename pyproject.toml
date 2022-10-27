@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "proctools"
-version = "0.2.2"
+version = "0.3.0"
 description = "ProcTools - Common tools for PDS4 data product processing"
 authors = ["Ariel Ladegaard <arl13@aber.ac.uk>"]
 license = "MIT"
@@ -25,8 +25,8 @@ numpy = [
   { version = "==1.19.5", python = ">=3.6,<3.8" },
   { version = "^1.22.0", python = ">=3.8" },
 ]
-passthrough = "0.3.2"
-#passthrough = {path = "../passthrough", develop = true}
+passthrough = "0.4.0"
+# passthrough = { path = "../passthrough", develop = true }
 pds4-tools = "^1.2"
 typer = { version = ">=0.3.2 < 0.5.0", optional = true }
 
