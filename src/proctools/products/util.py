@@ -10,8 +10,8 @@ class BayerSlice:
 
     Attributes:
         r: `slice` identifying red channel pixels
-        g1: `slice` identifying first green channel pixels
-        g2: `slice` identifying second green channel pixels
+        g1: `slice` identifying first green channel pixels (same row as `r`)
+        g2: `slice` identifying second green channel pixels (same row as `b`)
         b: `slice` identifying blue channel pixels
         pattern: effective pattern given the offset (upper case)
     """
@@ -27,23 +27,25 @@ class BayerSlice:
         pattern = pattern.lower()
         if not sorted(pattern) == ["b", "g", "g", "r"]:
             raise ValueError(f"Invalid bayer pattern: '{pattern}'")
+        # ensure g1 vs g2 assignment consistency
+        pattern = {
+            "rggb": ("r", "g1", "g2", "b"),
+            "grbg": ("g1", "r", "b", "g2"),
+            "gbrg": ("g2", "b", "r", "g1"),
+            "bggr": ("b", "g2", "g1", "r"),
+        }[pattern]
 
         self.r: slice = None
         self.g1: slice = None
         self.g2: slice = None
         self.b: slice = None
 
-        y = 0
-        x = 1
+        y, x = 0, 1
         loc_order = ((0, 0), (0, 1), (1, 0), (1, 1))
         loc_mod = (y_off % 2, x_off % 2)
 
         reordered = [""] * 4
-        g_count = 1
         for i, c in enumerate(pattern):
-            if c == "g":
-                c = f"g{g_count}"
-                g_count += 1
             loc = (
                 (loc_order[i][y] + loc_mod[y]) % 2,
                 (loc_order[i][x] + loc_mod[x]) % 2,

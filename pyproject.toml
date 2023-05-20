@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "proctools"
-version = "0.3.0"
+version = "0.3.1"
 description = "ProcTools - Common tools for PDS4 data product processing"
 authors = ["Ariel Ladegaard <arl13@aber.ac.uk>"]
 license = "MIT"
