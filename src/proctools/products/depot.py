@@ -79,7 +79,7 @@ class ProductDepot:
             for path in glob("*.xml"):
                 try:
                     product = DataProduct.from_file(path)
-                except (TypeError, ExpatError) as e:
+                except (TypeError, ExpatError, ValueError) as e:
                     self._log.warning(f"{e}; ignoring")
                     continue
                 type_ = product.type
