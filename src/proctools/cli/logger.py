@@ -6,13 +6,15 @@ from pathlib import Path
 from typing import Optional
 
 """
-This module does FIXME what?
+The "logger" module creates an in-memory log buffer, allowing you to
+defer decision as to whether you want log output. All logged records
+get stored and, when you call logger.init(), any buffered records
+will be output to the destination you've chosen.
 """
 
-# need to keep this at the top due to it being an annotated global (python issue34939)
+# Need to keep this at the top due to it being an annotated global (python issue 34939)
 initialised: bool = False
 level: Optional[int] = None
-
 
 def init(
     file: Optional[Path] = None,
@@ -22,6 +24,11 @@ def init(
     name_col_width: int = 25,
 ):
     """
+    This function configures logging to a file, stdout or both. When called,
+    it will funnel any previously-buffered log records through the requested
+    handlers. This means you could, for example, run a process and call init()
+    at the end of processing, once you've determined the success/fail status
+    of the procedure.
     """
     global _buffer, initialised, _root, level
 
