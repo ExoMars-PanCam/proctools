@@ -18,20 +18,21 @@ classifiers = [
   "Topic :: Scientific/Engineering",
   "Topic :: Utilities",
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.10,<3.11"
 dependencies = [
+    "coloredlogs>=14.0.1",
     "lxml>=6.0.0",
-    "numpy>=2.3.2",
-    "passthrough",
+    "numpy>=2.2.0",
     "pds4-tools>=1.4",
+    "passthrough",
 ]
 
 [project.urls]
-Repository = "https://github.com/ExoMars-PanCam/acp"
+Repository = "https://github.com/ExoMars-PanCam/proctools"
 
 [project.optional-dependencies]
 cli = [
-    "typer>=0.16.0",
+    "typer>=0.16.1",
 ]
 
 [build-system]
@@ -41,3 +42,7 @@ build-backend = "uv_build"
 [tool.uv.sources]
 passthrough = { path = "../passthrough" }
 
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.4.1",
+]
