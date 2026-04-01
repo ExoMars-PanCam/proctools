@@ -133,3 +133,4 @@ dmypy.json
 
 # Dependency tree/state; not currently required
 poetry.lock
+uv.lock
