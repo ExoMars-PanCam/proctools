@@ -71,7 +71,7 @@ class DataProduct:
             self.nsmap = self.template.nsmap
             self.filename = None
         else:
-            raise TypeError(f"`init` must take the form of a StructureList or Template")
+            raise TypeError("`init` must take the form of a StructureList or Template")
         self.xpath = etree.XPathEvaluator(
             self.label, namespaces=self.nsmap, regexp=False, smart_strings=False
         )

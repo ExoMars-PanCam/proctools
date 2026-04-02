@@ -35,28 +35,64 @@ class BayerSlice:
             "bggr": ("b", "g2", "g1", "r"),
         }[pattern]
 
+        # A slice is Python's data structure for representing the
+        # start:stop:step notation used in array subscripts. We're
+        # going to create 2-d slices for R, G1, G2 and B per the
+        # specified pattern, taking any specified offset into account.
         self.r: slice = None
         self.g1: slice = None
         self.g2: slice = None
         self.b: slice = None
 
-        y, x = 0, 1
+        # This is the order of pixels within a 2x2 block
+        # as specified by the pattern. e.g. for GRBG, we'd
+        # have:
+        #        GR
+        #        BG
+        #
+        # loc_order is specified in row-major order - i.e.
+        # the "y" position within the pattern is the first
+        # item in each tuple.
         loc_order = ((0, 0), (0, 1), (1, 0), (1, 1))
-        loc_mod = (y_off % 2, x_off % 2)
 
+        # These are symbolic constants within for the tuple
+        # X and Y coordinates, to save confusion below.
+        y = 0
+        x = 1
+
+        # Used to store the modified pattern.
         reordered = [""] * 4
         for i, c in enumerate(pattern):
+            # This is the position within the 2x2 block
+            # that the colour inhabits once we've allowed
+            # for x/y offsets.
             loc = (
-                (loc_order[i][y] + loc_mod[y]) % 2,
-                (loc_order[i][x] + loc_mod[x]) % 2,
+                (loc_order[i][y] + y_off) % 2,
+                (loc_order[i][x] + x_off) % 2,
             )
+
+            # Set the appropriate attribute (r, g1, g2, b) with a tuple
+            # giving the 2d slicing structure we've derived.
+            #
+            # np.s_[..] is a tricky function which generates the needed
+            # slice from the more familiar start:stop:step notation.
             self.__setattr__(c, np.s_[loc[y] :: 2, loc[x] :: 2])
+
+            # Now, given the possibly modified location we've
+            # calculated, store the colour name in the appropriate
+            # position in reordered. When we join reordered back together,
+            # this will give us the modified pattern that would apply if the
+            # offsets were zero.
             reordered[loc_order.index(loc)] = c[0].upper()
+
+        # And finally store the resulting pattern.
         self.pattern: str = "".join(reordered)
 
 
 def get_md5sum(path: Path, buffer: int = 128 * 1024):
-    """Generate the md5 hash for a file in chunks, providing a low memory footprint"""
+    """
+    Generate the md5 hash for a file in chunks, providing a low memory footprint
+    """
     md5 = hashlib.md5()
     with open(path, "rb", buffering=0) as f:
         while True:

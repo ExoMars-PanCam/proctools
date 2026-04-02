@@ -1,10 +1,10 @@
 """Common tools for (ExoMars) data product processing software.
 """
 
-try:
-    import importlib.metadata as importlib_metadata  # type: ignore
-except ImportError:
-    import importlib_metadata
+# Bring in some metadata from the package.
+import importlib.metadata as importlib_metadata # type: ignore
+
+# Copy it into module-level variables.
 _dist_meta = importlib_metadata.metadata("proctools")
 __author__ = _dist_meta["Author"]
 __description__ = _dist_meta["Summary"]

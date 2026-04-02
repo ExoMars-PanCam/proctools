@@ -1,4 +1,5 @@
 try:
+    # Test whether typer is available and, if not, give a warning.
     import typer as _
 
     from ._common import CONTEXT_SETTINGS, run, version_callback_for

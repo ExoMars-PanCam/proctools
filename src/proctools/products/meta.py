@@ -308,6 +308,16 @@ class LabelMeta:
     xpath and return any element objects found. Assignment via subscript notation is not
     supported.
 
+    The general idea is to wrap a label and simplify accessing xpath
+    locations. For example, we can have a map of the form
+
+    {
+        "lid": ".//pds:Identification_Area/pds:logical_identifier",
+    }
+
+    and reading/writing label.lid would result in the action being done on the
+    text of the relevant element within the XML tree.
+
     Attributes. The provided monikers are presented as attributes of this class (e.g.,
     `label_meta.moniker`). When reading a moniker attribute, it's value will be resolved
     as the text property of any element objects found, cast to the type specified by the
@@ -335,15 +345,18 @@ class LabelMeta:
         self._map = meta_map
 
     def __contains__(self, moniker: str) -> bool:
+        """Allows "in" searching"""
         return moniker in self._map
 
     def __getitem__(self, moniker: str) -> str:
+        """Dict style lookups return the element"""
         res = self._get(moniker, cast=False)
         if isinstance(res, List):
             return res[0]  # FIXME: questionable strategy?
         return res
 
     def __setitem__(self, moniker: str, val: str):
+        """Dict style assignment"""
         if not isinstance(val, str):
             raise TypeError(
                 f"Subscript assignment only supported for strings; got '{type(val)}'"
@@ -351,9 +364,17 @@ class LabelMeta:
         self._set(moniker, val, cast=False)
 
     def __getattr__(self, moniker: str) -> Any:
+        """Class member style lookups return the text within the element"""
+
+        # __getattr__ is only called for class members which are not
+        # found within the object.
         return self._get(moniker, cast=True)
 
     def __setattr__(self, moniker: str, val: Any) -> None:
+        """Class member style setting acts on the relevant element's text"""
+
+        # We need a get-out clause for class-private members, otherwise
+        # we'd not be able to store our own data (e.g. _label, etc above)
         if moniker.startswith("_"):
             return super().__setattr__(moniker, val)
         self._set(moniker, val, cast=True)
