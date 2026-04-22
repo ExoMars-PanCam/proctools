@@ -135,8 +135,3 @@ dmypy.json
 poetry.lock
 uv.lock
 
-# Test data set (because it's large).
-tests/products/datasets/**/*.dat
-tests/products/datasets/**/*.xml
-tests/products/datasets/**/*.csv
-tests/products/datasets/**/*.tab

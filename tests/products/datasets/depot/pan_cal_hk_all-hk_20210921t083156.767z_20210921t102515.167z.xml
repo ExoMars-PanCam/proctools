@@ -1,0 +1,847 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?xml-model href="http://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1D00.sch" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="http://pds.nasa.gov/pds4/geom/v1/PDS4_GEOM_1B10_1700.sch" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="http://pds.nasa.gov/pds4/img/v1/PDS4_IMG_1B00_1610.sch" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="https://psa.esa.int/psa/v1/PDS4_PSA_1101.sch" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="https://psa.esa.int/psa/emrsp/rm/v1/PDS4_PSA_EMRSP_RM_1D00_1100.sch" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="https://psa.esa.int/psa/emrsp/rm/v1/PDS4_PSA_EMRSP_RM_PAN_1D00_1000.sch" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<Product_Observational xmlns="http://pds.nasa.gov/pds4/pds/v1" xmlns:emrsp_rm="http://psa.esa.int/psa/emrsp/rm/v1" xmlns:geom="http://pds.nasa.gov/pds4/geom/v1" xmlns:psa="http://psa.esa.int/psa/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pds.nasa.gov/pds4/pds/v1 http://pds.nasa.gov/pds4/pds/v1/PDS4_PDS_1D00.xsd                         http://pds.nasa.gov/pds4/geom/v1 http://pds.nasa.gov/pds4/geom/v1/PDS4_GEOM_1B10_1700.xsd                         http://pds.nasa.gov/pds4/img/v1 http://pds.nasa.gov/pds4/img/v1/PDS4_IMG_1B00_1610.xsd                         http://psa.esa.int/psa/v1 https://psa.esa.int/psa/v1/PDS4_PSA_1101.xsd                         http://psa.esa.int/psa/emrsp/rm/v1 https://psa.esa.int/psa/emrsp/rm/v1/PDS4_PSA_EMRSP_RM_1D00_1100.xsd                         http://psa.esa.int/psa/emrsp/rm/pan/v1 https://psa.esa.int/psa/emrsp/rm/v1/PDS4_PSA_EMRSP_RM_PAN_1D00_1000.xsd                         http://pds.nasa.gov/pds4/msn/v1 http://pds.nasa.gov/pds4/msn/v1/PDS4_MSN_1B00_1100.xsd">
+
+    <Identification_Area> 
+        <logical_identifier>urn:esa:psa:emrsp_rm_pan:data_partially_processed:pan_cal_hk_all-hk_20210921t083156.767z_20210921t102515.167z</logical_identifier> 
+        <version_id>1.0</version_id> 
+        <title>PanCam partially processed housekeeping data</title>
+        <information_model_version>1.13.0.0</information_model_version>
+        <product_class>Product_Observational</product_class>
+        <Modification_History>
+            <Modification_Detail>
+                <modification_date>2021-10-14</modification_date> 
+                <version_id>1.0</version_id> 
+                <description>First Version</description> 
+            </Modification_Detail>
+        </Modification_History>
+    </Identification_Area>
+
+    <Observation_Area>
+        <comment>Observational Intent</comment>
+        <Time_Coordinates>
+            <start_date_time>2021-09-21T08:31:56.7671Z</start_date_time> 
+            <stop_date_time>2021-09-21T10:25:15.1679Z</stop_date_time> 
+        </Time_Coordinates>
+        <Primary_Result_Summary>
+            <purpose>Engineering</purpose>
+            <processing_level>Partially Processed</processing_level>
+            <description>This product contains housekeeping data of the PanCam instrument</description> 
+            <Science_Facets>
+                <discipline_name>Imaging</discipline_name>
+            </Science_Facets>
+        </Primary_Result_Summary>
+
+        <Investigation_Area>
+            <name>ExoMars RSP</name>
+            <type>Mission</type>
+            <Internal_Reference>
+                <lid_reference>urn:esa:psa:context:investigation:mission.emrsp</lid_reference>
+                <reference_type>data_to_investigation</reference_type>
+            </Internal_Reference>
+        </Investigation_Area>
+
+         <Observing_System>
+            <name>Observing System for PanCam</name>
+            <Observing_System_Component>
+                <name>ROVER MODULE</name>
+                <type>Spacecraft</type>
+                <description>Instrument Host ROVER MODULE</description>
+                <Internal_Reference>
+                    <lid_reference>urn:esa:psa:context:instrument_host:spacecraft.rm</lid_reference>
+                    <reference_type>is_instrument_host</reference_type>
+                </Internal_Reference>
+            </Observing_System_Component>
+            <Observing_System_Component>
+                <name>PanCam</name>
+                <type>Instrument</type>
+                <description>Instrument PanCam</description>
+                <Internal_Reference>
+                    <lid_reference>urn:esa:psa:context:instrument:rm.pan</lid_reference>
+                    <reference_type>is_instrument</reference_type>
+                </Internal_Reference>
+            </Observing_System_Component>
+        </Observing_System>
+
+        <Target_Identification>
+            <name>MARS</name>
+            <type>Planet</type>
+            <description>description of MARS goes here</description>
+            <Internal_Reference>
+                <lid_reference>urn:nasa:pds:context:target:planet.mars</lid_reference>
+                <reference_type>data_to_target</reference_type>
+            </Internal_Reference>
+        </Target_Identification>
+
+        <Mission_Area>
+            <emrsp_rm:Activity>
+                <emrsp_rm:activity_name>Ground Validation</emrsp_rm:activity_name>
+                <emrsp_rm:activity_session>Archive design</emrsp_rm:activity_session>
+            </emrsp_rm:Activity>
+
+            <psa:Mission_Information>
+                <psa:spacecraft_clock_start_count>1/0000005560.50382</psa:spacecraft_clock_start_count> 
+                <psa:spacecraft_clock_stop_count>1/0000012359.11115</psa:spacecraft_clock_stop_count> 
+                <psa:mission_phase_name>Pre Launch</psa:mission_phase_name>
+                <psa:mission_phase_identifier>pre_launch</psa:mission_phase_identifier>
+            </psa:Mission_Information>
+
+            <emrsp_rm:Mission>
+                <emrsp_rm:local_true_solar_time_start>05:06:17.000</emrsp_rm:local_true_solar_time_start> 
+                <emrsp_rm:local_true_solar_time_stop>06:56:34.000</emrsp_rm:local_true_solar_time_stop> 
+                <emrsp_rm:local_mean_solar_time_start>04:47:47.000</emrsp_rm:local_mean_solar_time_start> 
+                <emrsp_rm:local_mean_solar_time_stop>06:38:03.000</emrsp_rm:local_mean_solar_time_stop> 
+                <emrsp_rm:mms_sl_version>00.00.00</emrsp_rm:mms_sl_version>
+                <emrsp_rm:mms_il_version>00.00.00</emrsp_rm:mms_il_version>
+                <emrsp_rm:rvsw_version>00.00.00</emrsp_rm:rvsw_version>
+            </emrsp_rm:Mission>
+            
+            <emrsp_rm:Mission_Product>
+                <emrsp_rm:status>complete</emrsp_rm:status>
+                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                <emrsp_rm:Processing_Context>
+                    <emrsp_rm:processing_software_title>exm_pan_20</emrsp_rm:processing_software_title>
+                    <emrsp_rm:processing_software_version>0.5.2</emrsp_rm:processing_software_version>
+                    <emrsp_rm:Processing_Inputs>
+                        <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hkn_20210921t083156.767z_20210921t102514.167z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hkn_20210921t083300.767z_20210921t101937.167z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hkn_20210921t083303.767z_20210921t102454.167z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hkn_20210921t083359.767z_20210921t102459.167z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hkn_20210921t090736.766z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hkn_20210921t090738.766z_20210921t094805.766z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hkn_20210921t091318.766z_20210921t091319.766z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hkn_20210921t091849.766z_20210921t094748.766z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hk_20210921t083202.767z_20210921t102515.167z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hk_20210921t083302.767z_20210921t102451.167z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hk_20210921t083311.767z_20210921t102450.167z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hk_20210921t083358.767z_20210921t102455.167z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hk_20210921t090737.766z_20210921t094803.766z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hk_20210921t091209.766z_20210921t094750.766z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hk_20210921t091317.766z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm_pan:data_raw:pan_raw_hk_hk_20210921t091848.766z_20210921t094731.766z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>0</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    <emrsp_rm:Processing_Input_Identification>
+                            <emrsp_rm:type>PDS product</emrsp_rm:type>
+                            <emrsp_rm:Operational_Reference>
+                                <emrsp_rm:lid_reference>urn:esa:psa:emrsp_rm:calibration_files:pan_der_calib_hk-cal-prm_20210505t180000.000z</emrsp_rm:lid_reference>
+                                <emrsp_rm:operational_vid>1</emrsp_rm:operational_vid>
+                            </emrsp_rm:Operational_Reference>
+                        </emrsp_rm:Processing_Input_Identification>
+                    </emrsp_rm:Processing_Inputs>
+                </emrsp_rm:Processing_Context>
+            </emrsp_rm:Mission_Product>
+        </Mission_Area>
+
+         <Discipline_Area>
+            <geom:Geometry>
+                <geom:SPICE_Kernel_Files> 
+                    <geom:SPICE_Kernel_Identification>
+                        <geom:spice_kernel_file_name>emrsp_DESC_XXXX_vNNN.tm</geom:spice_kernel_file_name>
+                        <Internal_Reference>
+                            <lidvid_reference>urn:esa:psa:emrsp_spice:spice_kernels:product_identifier::1.0</lidvid_reference>
+                            <reference_type>geometry_to_SPICE_kernel</reference_type>
+                        </Internal_Reference>
+                    </geom:SPICE_Kernel_Identification>
+
+                </geom:SPICE_Kernel_Files>
+
+                <geom:Geometry_Lander>
+                
+                        
+
+                        
+                        
+                        
+                        
+                        
+
+                        
+                
+
+                    <geom:Coordinate_Space_Definition>
+                        
+                        
+                        <local_identifier>sensor_coordinate_space_identifier</local_identifier>
+                        <geom:Coordinate_Space_Present>
+                            
+                            <geom:Coordinate_Space_SPICE>
+                                <geom:body_spice_name>RM_PANCAM_BASE</geom:body_spice_name>
+                                <geom:frame_spice_name>RM_PANCAM_BASE</geom:frame_spice_name>
+                                
+                            </geom:Coordinate_Space_SPICE>
+                        </geom:Coordinate_Space_Present>
+                        <geom:Vector_Origin_Offset> 
+                            
+                            <geom:x_position unit="m">0.0</geom:x_position>
+                            <geom:y_position unit="m">0.0</geom:y_position>
+                            <geom:z_position unit="m">0.0</geom:z_position>
+                        </geom:Vector_Origin_Offset>
+                        <geom:Quaternion_Plus_Direction> 
+                            
+                            <geom:qcos>1.0</geom:qcos>
+                            <geom:qsin1>0.0</geom:qsin1>
+                            <geom:qsin2>0.0</geom:qsin2>
+                            <geom:qsin3>0.0</geom:qsin3>
+                            <geom:rotation_direction>Forward</geom:rotation_direction>
+                        </geom:Quaternion_Plus_Direction>
+                        <geom:Coordinate_Space_Reference>
+                            <geom:Coordinate_Space_SPICE>
+                                
+                                <geom:body_spice_name>RM_LANDING_SITE</geom:body_spice_name>
+                                <geom:frame_spice_name>RM_MLG</geom:frame_spice_name>
+                            </geom:Coordinate_Space_SPICE>
+                        </geom:Coordinate_Space_Reference>
+                    </geom:Coordinate_Space_Definition>
+
+
+
+
+
+
+                    <geom:Motion_Counter>
+                        <geom:name>Rover Motion Counter</geom:name>
+                        <local_identifier>RMC</local_identifier>
+                        <geom:Motion_Counter_Index>
+                            <geom:index_id>SITE</geom:index_id>
+                            <geom:index_value_number>0.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>DRIVE</geom:index_id>
+                            <geom:index_value_number>3.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>POSE</geom:index_id>
+                            <geom:index_value_number>5.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>MAST/PTU</geom:index_id>
+                            <geom:index_value_number>15.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>DRILLBOX</geom:index_id>
+                            <geom:index_value_number>1.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>DRILLROD</geom:index_id>
+                            <geom:index_value_number>3.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>CSTM</geom:index_id>
+                            <geom:index_value_number>0.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>BLANK</geom:index_id>
+                            <geom:index_value_number>0.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>CRUSHER</geom:index_id>
+                            <geom:index_value_number>0.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>DOSING</geom:index_id>
+                            <geom:index_value_number>0.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>CAROUSEL</geom:index_id>
+                            <geom:index_value_number>0.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    <geom:Motion_Counter_Index>
+                            <geom:index_id>TWEAK</geom:index_id>
+                            <geom:index_value_number>0.0</geom:index_value_number>
+                        </geom:Motion_Counter_Index>
+                    </geom:Motion_Counter>
+                </geom:Geometry_Lander>
+            </geom:Geometry>
+        </Discipline_Area>
+
+    </Observation_Area>
+
+    <Reference_List>
+        <Internal_Reference>
+            <lid_reference>urn:esa:psa:context:target:planet.mars</lid_reference>
+            <reference_type>data_to_document</reference_type>
+        </Internal_Reference>
+    </Reference_List>
+
+    <File_Area_Observational>
+        <File>
+            <file_name>pan_cal_hk_all-hk_20210921t083156.767z_20210921t102515.167z.tab</file_name> 
+            <local_identifier>all-hk</local_identifier>
+            <creation_date_time>2021-10-14T17:24:33.309Z</creation_date_time> 
+            <file_size unit="byte">1125175</file_size> 
+            <md5_checksum>76e62bdd83407eb261afd6fc709a78e7</md5_checksum> 
+            <comment>A table containing the consolidated PanCam HK from a single Sol with calibrations applied where useful.</comment>
+        </File>
+
+        <Table_Delimited>
+            <name>all-hk-common</name>
+            <offset unit="byte">0</offset>
+            <parsing_standard_id>PDS DSV 1</parsing_standard_id>
+            <records>4911</records> 
+            <record_delimiter>Carriage-Return Line-Feed</record_delimiter>
+            <field_delimiter>Semicolon</field_delimiter>
+           
+            <Record_Delimited>
+                <fields>33</fields>
+                <groups>1</groups>
+                <Field_Delimited>
+                    <name>OBT_COARSE_TIMESTAMP</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>This field represents the RAW rover on-board clock timestamp coarse part of a CCSDS unsegmented time code CUC(4,2) timestamp.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>OBT_FINE_TIMESTAMP</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>This field represents the RAW rover on-board clock timestamp fine part of a CCSDS unsegmented time code CUC(4,2) timestamp.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>Packet Criticality</name>
+                    <data_type>ASCII_String</data_type>
+                    <description>The criticality of HK for this record.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>Packet Type</name>
+                    <data_type>ASCII_String</data_type>
+                    <description>The type of HK for this record.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_PCS_CE</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>Enabled Camera</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_PCS_PSS</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>Powered camera</description>
+                </Field_Delimited>
+        
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_REFV</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Volts</unit>
+                    <description>PIU Reference Voltage 5V line used to sample voltages and temperatures.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_6V0</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Volts</unit>
+                    <description>DCDC 6.0V line sampled after filtering on the PIU board. Supply voltage used by PIU and peripherals.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_1V5</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Volts</unit>
+                    <description>DCDC 1.5V line after filtering on the PIU board. Supply voltage used on PIU for the RTAX2000 FPGA.</description>
+                </Field_Delimited>
+
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_LFWT</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Kelvin</unit>
+                    <description>Left filter wheel temperature. Measurement of the PT1000 temperature sensor bonded directly onto the filter wheel motor housing case.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_RFWT</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Kelvin</unit>
+                    <description>Right filter wheel temperature. Measurement of the PT1000 temperature sensor bonded directly onto the filter wheel motor housing case.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_HRCT</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Kelvin</unit>
+                    <description>HRC interface temperature. Mesaurement of the PT1000 temperature sensor mounted on the reverse of the HRC PCB aligned with the RTAX FPGA, measureed by the PIU.</description>
+                </Field_Delimited>  
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_LWACT</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Kelvin</unit>
+                    <description>Left WAC interface temperature. Measurement of the PT1000 temperature sensor mounted internally to the WAC cube and mounted in close proximity to the imaging sensor.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_RWACT</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Kelvin</unit>
+                    <description>Right WAC interface temperature. Measurement of the PT1000 temperature sensor mounted internally to the WAC cube and mounted in close proximity to the imaging sensor.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_LDOT</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Kelvin</unit>
+                    <description>PIU LDO temperature. Measurement of the PT1000 temperature sensor mounted directly onto the PIU Low DropOut regulator, the largest heat dissipator component on the PIU board.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_HRCAT</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Kelvin</unit>
+                    <description>HRC actuator temperature. Measurement of the PT1000 temperature sensor bonded directly onto the HRC focus mechanism motor housing case.</description>
+                </Field_Delimited>
+                
+                <Group_Field_Delimited>
+                    <name>PIU Error Flags</name>
+                    <repetitions>1</repetitions>
+                    <fields>33</fields>
+                    <groups>0</groups>
+                    <description>Some text here</description>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_FWR_CMD</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Right filter wheel command error. Flag asserted when PIU in wrong state for command type, command structure is incorrect or not recognised. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_FWL_CMD</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Left filter wheel command error. Flga asserted when PIU in wrong state for command type, command structure is incorrect or not recognised. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_MEM_OVERF</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Image write passed end of memory error. Flag asserted whenever the last image write to the PIU SDRAM exceeds the highest addressable location, image writing then continues from the start of the SDRAM memory. Flag can only be cleared following the next successful image write to memory or after a PIU reset. In nominal operation, the PIU will always write images to the start of SDRAM and always overwrite the previously received image. Therefore, this error can only be raised if the image base address is manually altered.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_OP_TIMEOUT</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>RMAP operation timed out error. The logic to assert this flag has not been implemented, therefore this flag shall always be FALSE.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_CMD_PIU_STAT</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>PIU in incorrect state for received command type error. The command is rejected and not executed. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_CMD_PV_OOR</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Parameter value out of expected range error. The logic to assert this flag has not been implemented, therefore this flag shall always be FALSE.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_CMD_NO_PARA</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Incorrect number of telecommand parameters error. Flag asserted whenever the recived number of parameters within a telecommand does not match thoese expected for the specified telecommand block ID. Command is rejected and not executed. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_CMD_NOT_RCG</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Command not recognised error. Flag asserted when the command block ID received is not contained within the list of allowed PanCam commands. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_FWL_RPOS</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Left filter wheel "Move Relative Number" error. Flag asserted when the debug command "Move Left Filter Relative filter number" is used and the PIU exceeds the maximum number of rotation steps before the target change in filter number is located. During nominal operation debug commands will not be sent and this flag not asserted. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_FWL_POS</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Left filter wheel "Move to Filter Number" error. Flag asserted when the command "Move to Filter Number" is used and the PIU exceeds the maximum number of rotation steps before the target filter number is located. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_FWL_IND</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Left filter wheel index error. Flag asserted when the number of steps rotated by the left filter wheel exceeds the maximum number expected before an Index signal is observed. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_FWL_HOME</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Left filter wheel home error. Flag asserted when the number of steps rotated by the left filter wheel exceeds the maximum number expected before a Home signal is observed. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_FWR_RPOS</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Right filter wheel "Move Relative Number" error. Flag asserted when the debug command "Move Right Filter Relative filter number" is used and the PIU exceeds the maximum number of rotation steps before the target change in filter number is located. During nominal operation debug commands will not be sent and this flag not asserted. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_FWR_POS</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Right filter wheel "Move to Filter Number" error. Flag asserted when the command "Move to Filter Number" is used and the PIU exceeds the maximum number of rotation steps before the target filter number is located. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_FWR_IND</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Right filter wheel index error. Flag asserted when the number of steps rotated by the right filter wheel exceeds the maximum number expected before an Index signal is observed. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR1_FWR_HOME</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Right filter wheel home error. Flag asserted when the number of steps rotated by the right filter wheel exceeds the maximum number expected before a Home signal is observed. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+
+                    <Field_Delimited>
+                        <name>TM_HK_ERR2_WACL_IMGCRC</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Left WAC failed image CRC16 check error. Flag asserted when the PIU calculated CRC16 of the image stored within the PIU SDRAM is different from the CRC16 reported in the WAC data transfer response packet to the PIU. This indicates there is likely corruption or missing data within the received image and the image should be resent or recaptured. Error asserted until a new image is received and the error is cleared, or the PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR2_WACL_CMDCRC</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Left WAC failed telemetry CRC check error. Flag asserted when the PIU calculated CRC8 of the WAC response does not match the CRC8 included in the WAC response packet. This indicates there is likely corruption or missing data in the WAC telemetry received by the PIU. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR2_WACL_CMD_TO</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Left WAC command response timeout error. Flag asserted when the PIU does not receive a response within 7ms of sending a WAC command. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR2_WACL_NAK</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Left WAC NAK response received. Flag asserted when the PIU receives the WAC telemetry Not Acknowledged response. The WAC camera response details the type of NAK received. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR2_WACL_N_PWR</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Left WAC command received but Left WAC not powered error. Flag asserted when the PIU receives a Left WAC command but the current powered camera is not the Left WAC. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR2_WACR_IMGCRC</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Right WAC failed image CRC16 check error. Flag asserted when the PIU calculated CRC16 of the image stored within the PIU SDRAM is different from the CRC16 reported in the WAC data transfer response packet to the PIU. This indicates there is likely corruption or missing data within the received image and the image should be resent or recaptured. Error asserted until a new image is received and the error is cleared, or the PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR2_WACR_CMDCRC</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Right WAC failed telemetry CRC check error. Flag asserted when the PIU calculated CRC8 of the WAC response does not match the CRC8 included in the WAC response packet. This indicates there is likely corruption or missing data in the WAC telemetry received by the PIU. Error asserted cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR2_WACR_CMD_TO</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Right WAC command response timeout error. Flag asserted when the PIU does not receive a response within 7ms of sending a WAC command. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR2_WACR_NAK</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Right WAC NAK response received. Flag asserted when the PIU receives the WAC telemetry Not Acknowledged response. The WAC camera response details the type of NAK received. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR2_WACR_N_PWR</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>Right WAC command received but Right WAC not powered error. Flag asserted when the PIU receives a Right WAC command but the current powered camera is not the Right WAC. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+
+                    <Field_Delimited>
+                        <name>TM_HK_ERR3_HRC_DS_TO</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>HRC Data-Strobe timeout error. Flag asserted if the PIU does not receive an expected image data character from the HRC within the 5.25ms timeout. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR3_HRC_IMG_ERR</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>HRC image error. Flag asserted if the HRC null token is not received within the 5.25ms timeout, following the transmission of the image data from the HRC to the PIU. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR3_HRC_INTG_TO</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>HRC image intergration timeout error. Flag asserted if the PIU does not receive HRC image data within the PIU calculated timeout. The PIU calculated timeout is based upon the PIU recorded current integration time extracted from the Set Integration Time command or the reported integration time found in Register Block 2. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR3_HRC_CMD_TO</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>HRC command timeout error. Flag asserted if the PIU does not receive a HRC HK response within 8.19ms of the PIU sending a command to the HRC. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR3_HRC_CRC</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>HRC image data parity error. Flag asserted if the PIU incoming HRC image byte fails the parity check. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR3_HRC_NAK</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>HRC command not acknowledged error. Flag asserted if the HRC HK response CMD ID received by the PIU does not match the command sent to HRC. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                    <Field_Delimited>
+                        <name>TM_HK_ERR3_HRC_N_PWR</name>
+                        <data_type>ASCII_Boolean</data_type>
+                        <description>HRC command received but HRC not powered error. Flag asserted when the PIU receives a HRC command but the current powered camera is not the HRC. Error asserted until cleared or PIU reset.</description>
+                    </Field_Delimited>
+                </Group_Field_Delimited>
+                
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_TCS_STAT</name>
+                    <data_type>ASCII_Boolean</data_type>
+                    <description>PIU temperature control heater active status. A TRUE flag denotes power is being applied to the cameara heater and it is currently enabled and warming the selected camera. A FALSE flag denotes the heater is disabled and no power is applied.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_TCS_MODE</name>
+                    <data_type>ASCII_Boolean</data_type>
+                    <description>PIU temperature control mode flag. A TRUE flag denotes that the PIU is in automatic regulation mode and the heater will be automatically enabled and disabled. A FALSE flag denotes manual mode and the heater status is set via command.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_TCS_HEAT</name>
+                    <data_type>ASCII_Boolean</data_type>
+                    <description>PIU temperature control camera selection.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_TCS_SET_RAW</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>PIU temperature contol setpoint for automatic regulation in RAW units.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_TCS_SET</name>
+                    <data_type>ASCII_Real</data_type>
+                    <unit>Kelvin</unit>
+                    <description>PIU temperature contol setpoint for automatic regulation with camera calibration applied.</description> 
+                </Field_Delimited>
+                
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_FWS_LOP</name>
+                    <data_type>ASCII_Boolean</data_type>
+                    <description>Left filter wheel powered flag. A TRUE flag denotes that power is currently being applied to the filter wheel motor.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_FWS_LHM</name>
+                    <data_type>ASCII_Boolean</data_type>
+                    <description>Left filter home flag. A TRUE flag denotes that the Home location indicator is currently active.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_FWS_LIDX</name>
+                    <data_type>ASCII_Boolean</data_type>
+                    <description>Left filter index flag. A TRUE flag denotes that the Index location indicator is currently acitve.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_FWS_LFN</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>Current filter position of the left filter wheel.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_LFWAS</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>Left filter wheel number of motor steps moved from the last Home indicator.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_LFWRS</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>Left filter wheel number of motor steps moved from the last Index indicator.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_FWS_ROP</name>
+                    <data_type>ASCII_Boolean</data_type>
+                    <description>Right filter wheel powered flag. A TRUE flag denotes that power is currently being applied to the filter wheel motor.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_FWS_RHM</name>
+                    <data_type>ASCII_Boolean</data_type>
+                    <description>Right filter home flag. A TRUE flag denotes that the Home location indicator is currently active.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_FWS_RIDX</name>
+                    <data_type>ASCII_Boolean</data_type>
+                    <description>Right filter index flag. A TRUE flag denotes that the Index location indicator is currently acitve.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_FWS_RFN</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>Current filter position of the right filter wheel.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_RFWAS</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>Right filter wheel number of motor steps moved from the last Home indicator.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HK_RFWRS</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>Right filter wheel number of motor steps moved from the last Index indicator.</description>
+                </Field_Delimited>
+
+            </Record_Delimited>
+        </Table_Delimited>
+
+        <Table_Delimited>
+            <name>all-hk-non_crit</name>
+            <offset unit="byte">922353</offset> 
+            <parsing_standard_id>PDS DSV 1</parsing_standard_id>
+            <description>HK Elements only contained within the non-critical telemetry</description>
+            <records>3695</records> 
+            <record_delimiter>Carriage-Return Line-Feed</record_delimiter>
+            <field_delimiter>Semicolon</field_delimiter>
+            <Record_Delimited>
+                <fields>17</fields>
+                <groups>0</groups>
+                <Field_Delimited>
+                    <name>OBT_COARSE_TIMESTAMP</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>This field represents the RAW rover on-board clock timestamp coarse part of a CCSDS unsegmented time code CUC(4,2) timestamp.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>OBT_FINE_TIMESTAMP</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>This field represents the RAW rover on-board clock timestamp fine part of a CCSDS unsegmented time code CUC(4,2) timestamp.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_SIID_SOL</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>The mission sol day reported by the PIU, set by the set image ID command.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_SIID_TID</name>
+                    <data_type>ASCII_Integer</data_type>
+                    <description>The acquisition type id set by the image ID command. Used to indicate ground processing workflow and product attributes.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_SIID_TRN</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Acquisition sequence number. The count of the number of acquisition types executed during a sol, set by the set image ID command.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_SIID_PC</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Current powered camera. As reported in image ancillary data</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_SIID_FW</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Current active filter for the current powered camera. As reported in image ancillary data</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_SIID_IN</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Image counter, starting at 1, of the number of images sent to the PIU from the cameras since PanCam power-up or reset.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_VER</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>The PIU FPGA firmware version.</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_LFWRT</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Left Filter Wheel Fast Recirculation Time</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_LFWS</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Left Filter Wheel Speed</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_RFWS</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Right Filter Wheel Speed</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_LFWCS</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Left Filter Wheel Peak Current</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_RFWCS</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Right Filter Wheel Peak Current</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_RFWRT</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Right Filter Wheel Fast Recirculation Time</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_LSLF</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Left Filter Wheel Step Level</description>
+                </Field_Delimited>
+                <Field_Delimited>
+                    <name>PAN_TM_PIU_HKN_RSLF</name>
+                    <data_type>ASCII_NonNegative_Integer</data_type>
+                    <description>Right Filter Wheel Step Level</description>
+                </Field_Delimited>
+            </Record_Delimited>
+        </Table_Delimited>
+    </File_Area_Observational>
+
+
+</Product_Observational>
