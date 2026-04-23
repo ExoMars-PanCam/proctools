@@ -25,11 +25,25 @@ classifiers = [
   "Topic :: Utilities",
 ]
 
-requires-python = ">=3.8,<3.9"
+# Previous versions of Proctools targetted Python 3.6. This has
+# become increasingly difficult to maintain, nearly 5 years after
+# EOL. Neither 3.6.x nor 3.7.x is supported by a default install of
+# uv, nor by recent versions of poetry.
+#
+# PCOT targets 3.9.x and 3.10.x, and the Altec-provided VM seems
+# happy with the "uv" supported 3.9.x binaries (but has symbol lookup
+# errors for 3.8.20). So it seems reasonable to target the same versions
+# as PCOT targets.
+#
+# As of 2026-04-23, on an up to date Ubuntu install, proctools passes
+# its test suite for all uv Python versions from 3.8 to 3.15 and, for
+# the later versions of Python, with the latest versions of lxml, numpy
+# and pds4-tools.
+requires-python = ">=3.9,<3.11"
 dependencies = [
-    "lxml>=4.6.3,<5",
-    "numpy>=1.22.0,<2",
-    "pds4-tools>=1.2,<2",
+    "lxml>=4.6.3,<6.2.0",
+    "numpy>=1.22.0,<2.5.0",
+    "pds4-tools>=1.2,<1.5",
 #    "passthrough==0.4.0",
     "passthrough @ file:///home/alj118/lxc/pancam/git/passthrough",
 ]
@@ -43,8 +57,6 @@ Repository = "https://github.com/ExoMars-PanCam/proctools"
 [dependency-groups]
 dev = [
     "pytest>=3.5",
-    "black>=20.8b1,<21",
-    "isort>=5.10.1,<6",
     "ruff>=0.15.8",
 ]
 
