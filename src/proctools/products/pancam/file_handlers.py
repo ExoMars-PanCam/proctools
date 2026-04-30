@@ -26,6 +26,7 @@ class Array2DImageDO(DataObject, classes="Array_2D_Image"):
         self._dtype = {
             "IEEE754MSBSingle": ">f4",
             "UnsignedMSB4": ">u4",
+            "UnsignedMSB2": ">u2",
         }[arr_dtype]
         self.data: np.ndarray = np.zeros(self._shape, self._dtype)
 
