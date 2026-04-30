@@ -121,9 +121,11 @@ def init(
             )
 
     # Hopefully temporary: prevent pds4_tools from violating its quiet setting
+    handlers = []
     for handler in _root.handlers:
         if handler is not _buffer:
             handler.addFilter(_filter_pds4_tools)
+            handlers.append(handler)
 
     # Flush the temporary log record buffer to the new handler(s),
     # close and remove it.
