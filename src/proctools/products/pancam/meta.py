@@ -86,3 +86,41 @@ PANCAM_META_MAP = DataProduct._META_MAP.extend(
     },
     overload=True,
 )
+
+PANCAM_MOSAIC_META_MAP = DataProduct._META_MAP.extend(
+    {
+        "Identification_Area": {
+            "logical_identifier": M("lid", ExoMarsLID.from_string, ns="pds"),
+            "version_id": M("vid", ns="pds"),
+        },
+        "Experiment_Cycle": {
+            "ec_number": M("ec_num", ns="emrsp_rm"),
+            "ec_phase": M("ec_phase", ns="emrsp_rm"),
+        },
+        "Mission": {
+            "mars_sol": M("mars_sol", ns="emrsp_rm"),
+            "local_mean_solar_time_start": M("start_lmst", time, ns="emrsp_rm"),
+            "local_true_solar_time_start": M("start_ltst", time, ns="emrsp_rm"),
+            "local_mean_solar_time_stop": M("stop_lmst", time, ns="emrsp_rm"),
+            "local_true_solar_time_stop": M("stop_ltst", time, ns="emrsp_rm"),
+            "vertical_survey_number": M("vs_num", ns="emrsp_rm"),
+        },
+        "Mission_Product": {
+            "operational_vid": M("ovid", VID, ns="emrsp_rm"),
+        },
+        "Cylindrical": {
+            "pixel_scale_x": M("pixel_scale_x", float, ns="cart"),
+            "pixel_scale_y": M("pixel_scale_y", float, ns="cart"),
+            "maximum_elevation": M("maximum_elevation", float, ns="cart"),
+            "minimum_elevation": M("minimum_elevation", float, ns="cart"),
+            "start_azimuth": M("start_azimuth", float, ns="cart"),
+            "stop_azimuth": M("stop_azimuth", float, ns="cart"),
+            "zero_elevation_line": M("zero_elevation_line", float, ns="cart"),
+        },
+        "Special_Constants": {
+            "missing_constant": M("missing_constant", float, ns="pds"),
+            "invalid_constant": M("invalid_constant", float, ns="pds"),
+        },
+    },
+    overload=True,
+)

@@ -6,7 +6,7 @@ from passthrough.exc import PTTemplateError
 from .file_handlers import PanCamFH
 from ..dataproduct import DataProduct
 from ..mixins import SortStartTimeMixin
-from . import PANCAM_META_MAP
+from . import PANCAM_META_MAP, PANCAM_MOSAIC_META_MAP
 from .mixins import BrowseMixin, MatchCameraMixin
 
 
@@ -70,3 +70,11 @@ class AppCol(Observational, type_name="app-col"):
     @threaded_cached_property
     def err(self) -> np.ndarray:
         return self._data_source["UNCERTAINTY"].data
+
+class Mosaic(Observational, type_name="mosaic"):
+    """PAN-PP-240"""
+    _META_MAP = PANCAM_MOSAIC_META_MAP
+
+    @threaded_cached_property
+    def data(self) -> np.ndarray:
+        return self._data_source["IMAGE_DATA"].data
